@@ -87,7 +87,7 @@ wire          disp_vs;
 wire  [23:0]  disp_data;
 wire  [7 :0]  mVGA_R;
 wire  [7 :0]  mVGA_G;
-wire  [7 :0]  mVGA_B; 
+wire  [7 :0]  mVGA_B;
 
 
 
@@ -125,24 +125,24 @@ end
 Qsys u0 (
 		.clk_clk                                   (MAX10_CLK1_50), 			//                              clk.clk
 		.reset_reset_n                             (1'b1), 						//                            reset.reset_n
-		
+
 		.clk_sdram_clk                             (DRAM_CLK),					//                        clk_sdram.clk
 		.clk_vga_clk                               (disp_clk),					//                          clk_vga.clk
 		.d8m_xclkin_clk                            (MIPI_REFCLK),				//                       d8m_xclkin.clk
-		
+
 		.key_external_connection_export            (KEY),            			//          key_external_connection.export
 		.led_external_connection_export            (),            				//          led_external_connection.export
 		.sw_external_connection_export             (SW),             			//           sw_external_connection.export
-		
+
 		.i2c_opencores_camera_export_scl_pad_io    (CAMERA_I2C_SCL),    		//      i2c_opencores_camera_export.scl_pad_io
 		.i2c_opencores_camera_export_sda_pad_io    (CAMERA_I2C_SDA),    		//                                 .sda_pad_io
-		
+
 		.i2c_opencores_mipi_export_scl_pad_io      (MIPI_I2C_SCL),      		//        i2c_opencores_mipi_export.scl_pad_io
 		.i2c_opencores_mipi_export_sda_pad_io      (MIPI_I2C_SDA),      		//                                 .sda_pad_io
-		
+
 		.mipi_pwdn_n_external_connection_export    (CAMERA_PWDN_n),    			//  mipi_pwdn_n_external_connection.export
 		.mipi_reset_n_external_connection_export   (MIPI_RESET_n),   			// mipi_reset_n_external_connection.export
-		
+
 		.sdram_wire_addr                           (DRAM_ADDR),					//                       sdram_wire.addr
 		.sdram_wire_ba                             (DRAM_BA),					//                                 .ba
 		.sdram_wire_cas_n                          (DRAM_CAS_N),				//                                 .cas_n
@@ -152,16 +152,16 @@ Qsys u0 (
 		.sdram_wire_dqm                            ({DRAM_UDQM, DRAM_LDQM}),	//                                 .dqm
 		.sdram_wire_ras_n                          (DRAM_RAS_N),				//                                 .ras_n
 		.sdram_wire_we_n                           (DRAM_WE_N),					//                                 .we_n
-		
+
 		.terasic_camera_0_conduit_end_D            ({MIPI_PIXEL_D_d[9:0], 2'b00}),//     terasic_camera_0_conduit_end.D
 		.terasic_camera_0_conduit_end_FVAL         (MIPI_PIXEL_VS_d),         	//                                 .FVAL
 		.terasic_camera_0_conduit_end_LVAL         (MIPI_PIXEL_HS_d),         	//                                 .LVAL
 		.terasic_camera_0_conduit_end_PIXCLK       (~MIPI_PIXEL_CLK_d),        	//                                 .PIXCLK
-		
+
 		.terasic_auto_focus_0_conduit_vcm_i2c_sda  (CAMERA_I2C_SDA),  			//     terasic_auto_focus_0_conduit.vcm_i2c_sda
 		.terasic_auto_focus_0_conduit_clk50        (MAX10_CLK1_50),        		//                                 .clk50
 		.terasic_auto_focus_0_conduit_vcm_i2c_scl  (CAMERA_I2C_SCL),  			//                                 .vcm_i2c_scl
-		
+
 		.alt_vip_itc_0_clocked_video_vid_clk       (disp_clk),       			//      alt_vip_itc_0_clocked_video.vid_clk
 		.alt_vip_itc_0_clocked_video_vid_data      (disp_data),      			//                                 .vid_data
 		.alt_vip_itc_0_clocked_video_underflow     (),     						//                                 .underflow
@@ -171,21 +171,31 @@ Qsys u0 (
 		.alt_vip_itc_0_clocked_video_vid_f         (),         					//                                 .vid_f
 		.alt_vip_itc_0_clocked_video_vid_h         (),         					//                                 .vid_h
 		.alt_vip_itc_0_clocked_video_vid_v         (),         					//                                 .vid_v
-		
+
 		.altpll_0_areset_conduit_export            (),            				//          altpll_0_areset_conduit.export
 		.altpll_0_locked_conduit_export            (),            				//          altpll_0_locked_conduit.export
-		.altpll_0_phasedone_conduit_export         (),         					//       altpll_0_phasedone_conduit.export		
-		
+		.altpll_0_phasedone_conduit_export         (),         					//       altpll_0_phasedone_conduit.export
+
 		.eee_imgproc_0_conduit_mode_new_signal     (SW[0])
 	);
 
 FpsMonitor uFps(
 	.clk50(MAX10_CLK2_50),
 	.vs(MIPI_PIXEL_VS),
-	
+
 	.fps(),
 	.hex_fps_h(HEX1),
 	.hex_fps_l(HEX0)
+);
+
+SPI_slave SPI_slave_inst(
+	.clk(MAX10_CLK2_50),
+	.toggle_out(SW[9]),
+	.SCK(ARDUINO_IO[10]),
+	.SSEL(ARDUINO_IO[12]),
+	.MOSI(ARDUINO_IO[14]),
+	.MISO(ARDUINO_IO[15]),
+	.LED(LEDR[7:0])
 );
 
 assign  HEX2 = 7'h7F;
