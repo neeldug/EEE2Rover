@@ -16,6 +16,12 @@
 			clk_vga_clk                               : out   std_logic;                                        -- clk
 			d8m_xclkin_clk                            : out   std_logic;                                        -- clk
 			eee_imgproc_0_conduit_mode_new_signal     : in    std_logic                     := 'X';             -- new_signal
+			eee_imgproc_0_conduit_mode_new_signal_1   : in    std_logic                     := 'X';             -- new_signal_1
+			eee_imgproc_0_conduit_mode_new_signal_2   : in    std_logic                     := 'X';             -- new_signal_2
+			eee_imgproc_0_conduit_mode_new_signal_3   : in    std_logic                     := 'X';             -- new_signal_3
+			eee_imgproc_0_conduit_mode_new_signal_4   : out   std_logic;                                        -- new_signal_4
+			eee_imgproc_0_conduit_mode_new_signal_5   : in    std_logic                     := 'X';             -- new_signal_5
+			eee_imgproc_0_conduit_mode_new_signal_6   : out   std_logic;                                        -- new_signal_6
 			i2c_opencores_camera_export_scl_pad_io    : inout std_logic                     := 'X';             -- scl_pad_io
 			i2c_opencores_camera_export_sda_pad_io    : inout std_logic                     := 'X';             -- sda_pad_io
 			i2c_opencores_mipi_export_scl_pad_io      : inout std_logic                     := 'X';             -- scl_pad_io
@@ -63,6 +69,12 @@
 			clk_vga_clk                               => CONNECTED_TO_clk_vga_clk,                               --                          clk_vga.clk
 			d8m_xclkin_clk                            => CONNECTED_TO_d8m_xclkin_clk,                            --                       d8m_xclkin.clk
 			eee_imgproc_0_conduit_mode_new_signal     => CONNECTED_TO_eee_imgproc_0_conduit_mode_new_signal,     --       eee_imgproc_0_conduit_mode.new_signal
+			eee_imgproc_0_conduit_mode_new_signal_1   => CONNECTED_TO_eee_imgproc_0_conduit_mode_new_signal_1,   --                                 .new_signal_1
+			eee_imgproc_0_conduit_mode_new_signal_2   => CONNECTED_TO_eee_imgproc_0_conduit_mode_new_signal_2,   --                                 .new_signal_2
+			eee_imgproc_0_conduit_mode_new_signal_3   => CONNECTED_TO_eee_imgproc_0_conduit_mode_new_signal_3,   --                                 .new_signal_3
+			eee_imgproc_0_conduit_mode_new_signal_4   => CONNECTED_TO_eee_imgproc_0_conduit_mode_new_signal_4,   --                                 .new_signal_4
+			eee_imgproc_0_conduit_mode_new_signal_5   => CONNECTED_TO_eee_imgproc_0_conduit_mode_new_signal_5,   --                                 .new_signal_5
+			eee_imgproc_0_conduit_mode_new_signal_6   => CONNECTED_TO_eee_imgproc_0_conduit_mode_new_signal_6,   --                                 .new_signal_6
 			i2c_opencores_camera_export_scl_pad_io    => CONNECTED_TO_i2c_opencores_camera_export_scl_pad_io,    --      i2c_opencores_camera_export.scl_pad_io
 			i2c_opencores_camera_export_sda_pad_io    => CONNECTED_TO_i2c_opencores_camera_export_sda_pad_io,    --                                 .sda_pad_io
 			i2c_opencores_mipi_export_scl_pad_io      => CONNECTED_TO_i2c_opencores_mipi_export_scl_pad_io,      --        i2c_opencores_mipi_export.scl_pad_io

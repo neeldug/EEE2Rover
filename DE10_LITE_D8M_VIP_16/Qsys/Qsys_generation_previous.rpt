@@ -113,15 +113,15 @@ Info: TERASIC_CAMERA_0: "Qsys" instantiated TERASIC_CAMERA "TERASIC_CAMERA_0"
 Info: alt_vip_itc_0: "Qsys" instantiated alt_vip_itc "alt_vip_itc_0"
 Info: alt_vip_vfb_0: "Qsys" instantiated alt_vip_vfb "alt_vip_vfb_0"
 Info: altpll_0: Error while generating Qsys_altpll_0.v : 1 : Illegal port or parameter name scandone Illegal port or parameter name scanclkena Illegal port or parameter name scandataout Illegal port or parameter name configupdate Illegal port or parameter name scandata child process exited abnormally
-Info: altpll_0: Illegal port or parameter name scandone Illegal port or parameter name scanclkena Illegal port or parameter name scandataout Illegal port or parameter name configupdate Illegal port or parameter name scandata child process exited abnormally     while executing "exec /home/ed/altera_lite/16.0/quartus/linux64/clearbox altpll_avalon device_family=MAX10 CBX_FILE=Qsys_altpll_0.v -f cbxcmdln_1617092145442977"     ("eval" body line 1)     invoked from within "eval exec $cbx_cmd "
-Error: Can't continue processing -- expected file /tmp/alt8716_2763057626446894966.dir/0014_sopcgen/Qsys_altpll_0.v is missing
+Info: altpll_0: Illegal port or parameter name scandone Illegal port or parameter name scanclkena Illegal port or parameter name scandataout Illegal port or parameter name configupdate Illegal port or parameter name scandata child process exited abnormally     while executing "exec /home/ed/altera_lite/16.0/quartus/linux64/clearbox altpll_avalon device_family=MAX10 CBX_FILE=Qsys_altpll_0.v -f cbxcmdln_1617092322619640"     ("eval" body line 1)     invoked from within "eval exec $cbx_cmd "
+Error: Can't continue processing -- expected file /tmp/alt8716_2763057626446894966.dir/0017_sopcgen/Qsys_altpll_0.v is missing
 Warning: Quartus Prime Generate HDL Interface was unsuccessful. 1 error, 0 warnings
 Error:     Peak virtual memory: 1399 megabytes
-Error:     Processing ended: Tue Mar 30 09:15:46 2021
-Error:     Elapsed time: 00:00:00
+Error:     Processing ended: Tue Mar 30 09:18:43 2021
+Error:     Elapsed time: 00:00:01
 Error:     Total CPU time (on all processors): 00:00:00
-Error: altpll_0: File /tmp/alt8716_2763057626446894966.dir/0014_sopcgen/Qsys_altpll_0.v written by generation callback did not contain a module called Qsys_altpll_0
-Error: altpll_0: /tmp/alt8716_2763057626446894966.dir/0014_sopcgen/Qsys_altpll_0.v (No such file or directory)
+Error: altpll_0: File /tmp/alt8716_2763057626446894966.dir/0017_sopcgen/Qsys_altpll_0.v written by generation callback did not contain a module called Qsys_altpll_0
+Error: altpll_0: /tmp/alt8716_2763057626446894966.dir/0017_sopcgen/Qsys_altpll_0.v (No such file or directory)
 Info: altpll_0: "Qsys" instantiated altpll "altpll_0"
 Error: Generation stopped, 218 or more modules remaining
 Info: Qsys: Done "Qsys" with 33 modules, 34 files

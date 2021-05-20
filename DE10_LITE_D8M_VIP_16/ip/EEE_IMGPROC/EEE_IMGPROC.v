@@ -26,8 +26,15 @@ module EEE_IMGPROC (
     source_eop,
 
     // conduit
-    mode
+    mode,
 
+    // SPI
+    LED,
+    MISO,
+    MOSI,
+    SCK,
+    SSEL,
+    toggle_out
 );
 
 
@@ -60,6 +67,14 @@ module EEE_IMGPROC (
 
   // conduit export
   input mode;
+  
+  // SPI
+  output LED;
+  output MISO;
+  input MOSI;
+  input SCK;
+  input SSEL;
+  input toggle_out;
 
   ////////////////////////////////////////////////////////////////////////
   //
@@ -247,6 +262,16 @@ module EEE_IMGPROC (
         .sat(sat),
         .val(val)
     );
+	 
+	 SPI_slave SPI_slave_inst(
+		.clk(clk),
+		.toggle_out(toggle_out),
+		.SCK(SCK),
+		.MOSI(MOSI),
+		.MISO(MISO),
+		.SSEL(SSEL),
+		.LED(LED)
+	 );
 
 
   /////////////////////////////////
