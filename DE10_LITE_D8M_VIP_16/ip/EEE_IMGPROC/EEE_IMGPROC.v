@@ -96,33 +96,38 @@ module EEE_IMGPROC (
   // Detect red areas
   wire red_detect;
 
-    // Detect blue areas
-    wire blue_detect;
+  // Detect blue areas
+  wire blue_detect;
 
-    // Detect pink areas
-    wire pink_detect;
+  // Detect pink areas
+  wire pink_detect;
 
-    // Detect green areas
-    wire green_detect;
+  // Detect green areas
+  wire green_detect;
 
-    // Detect yellow areas
-    wire yellow_detect;
+  // Detect yellow areas
+  wire yellow_detect;
 
-  assign red_detect = (( hue < 20 || hue > 340) && val > 110) ? 1'b1 : 1'b0;
-  assign blue_detect = (( hue < 266 && hue > 214) && val > 110) ? 1'b1 : 1'b0;
+  assign red_detect  = ((hue < 20 || hue > 340) && val > 110 && sat > 76) ? 1'b1 : 1'b0;
+  assign blue_detect = ((hue < 240 && hue > 200) && val > 60) ? 1'b1 : 1'b0;
+  assign pink_detect = ((hue < 340 && hue > 270)) ? 1'b1 : 1'b0;
   // Find boundary of cursor box
 
   // Highlight detected areas
   wire [23:0] red_high;
   wire [23:0] blue_high;
+  wire [23:0] pink_high;
+
   assign grey = green[7:1] + red[7:2] + blue[7:2];  //Grey = green/2 + red/4 + blue/4
+
   assign red_high = red_detect ? {8'hff, 8'h0, 8'h0} : {grey, grey, grey};
   assign blue_high = blue_detect ? {8'h0, 8'h0, 8'hff} : {grey, grey, grey};
+  assign pink_high = pink_detect ? {8'hff, 8'hc0, 8'hcb} : {grey, grey, grey};
   // Show bounding box
   wire [23:0] new_image;
   wire bb_active;
   assign bb_active = (x == left) | (x == right) | (y == top) | (y == bottom);
-  assign new_image = bb_active ? bb_col : blue_high;
+  assign new_image = bb_active ? bb_col : pink_high;
 
   // Switch output pixels depending on mode switch
   // Don't modify the start-of-packet word - it's a packet discriptor
@@ -152,7 +157,7 @@ module EEE_IMGPROC (
   //Find first and last red pixels
   reg [10:0] x_min, y_min, x_max, y_max;
   always @(posedge clk) begin
-    if (red_detect & in_valid) begin  //Update bounds when the pixel is red
+    if (pink_detect & in_valid) begin  //Update bounds when the pixel is red
       if (x < x_min) x_min <= x;
       if (x > x_max) x_max <= x;
       if (y < y_min) y_min <= y;
@@ -266,26 +271,26 @@ module EEE_IMGPROC (
       .data_in({red_out, green_out, blue_out, sop, eop})
   );
 
-    rgb_hsv rgb_hsv_inst(
-        .clk(clk),
-        .rst(reset_n),
-        .red(red),
-        .green(green),
-        .blue(blue),
-        .hue(hue),
-        .sat(sat),
-        .val(val)
-    );
+  rgb_hsv rgb_hsv_inst (
+      .clk  (clk),
+      .rst  (reset_n),
+      .red  (red),
+      .green(green),
+      .blue (blue),
+      .hue  (hue),
+      .sat  (sat),
+      .val  (val)
+  );
 
-	 SPI_slave SPI_slave_inst(
-		.clk(clk),
-		.toggle_out(toggle_out),
-		.SCK(SCK),
-		.MOSI(MOSI),
-		.MISO(MISO),
-		.SSEL(SSEL),
-		.LED(LED)
-	 );
+  SPI_slave SPI_slave_inst (
+      .clk(clk),
+      .toggle_out(toggle_out),
+      .SCK(SCK),
+      .MOSI(MOSI),
+      .MISO(MISO),
+      .SSEL(SSEL),
+      .LED(LED)
+  );
 
 
   /////////////////////////////////
