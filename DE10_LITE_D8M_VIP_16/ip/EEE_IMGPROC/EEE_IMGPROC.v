@@ -67,7 +67,7 @@ module EEE_IMGPROC (
 
   // conduit export
   input mode;
-  
+
   // SPI
   output LED;
   output MISO;
@@ -95,7 +95,8 @@ module EEE_IMGPROC (
 
   // Detect red areas
   wire red_detect;
-  assign red_detect = red[7] & ~green[7] & ~blue[7];
+  // assign red_detect = red[7] & ~green[7] & ~blue[7];
+  assign red_detect = (( hue < 20 || hue > 340) && val > 120) ? 1'b1 : 1'b0;
 
   // Find boundary of cursor box
 
@@ -262,7 +263,7 @@ module EEE_IMGPROC (
         .sat(sat),
         .val(val)
     );
-	 
+
 	 SPI_slave SPI_slave_inst(
 		.clk(clk),
 		.toggle_out(toggle_out),
