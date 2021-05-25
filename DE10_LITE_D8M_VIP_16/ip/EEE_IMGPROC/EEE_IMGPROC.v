@@ -95,7 +95,10 @@ module EEE_IMGPROC (
 
   // Detect red areas
   wire red_detect;
+  reg prev_red_detect;
+  reg [10:0] red_RLE;
 
+  initial red_RLE = 0;
   // Detect blue areas
   wire blue_detect;
 
@@ -108,26 +111,41 @@ module EEE_IMGPROC (
   // Detect yellow areas
   wire yellow_detect;
 
-  assign red_detect  = ((hue < 20 || hue > 340) && val > 110 && sat > 76) ? 1'b1 : 1'b0;
+  assign red_detect  = ((hue < 20 || hue > 340) && val > 110 && sat > 46) ? 1'b1 : 1'b0;
+  // always @(posedge clk) begin
+  //     if (red_detect != prev_red_detect) begin
+  //       //todo: push to FIFO here as the "run has ended", will need to come up with some decode logic per frame
+  //       red_RLE <= 'b1;
+  //     end
+  //     else begin
+  //         red_RLE <= red_RLE + 1'b1;
+  //     end
+  // end
+
+
   assign blue_detect = ((hue < 240 && hue > 200) && val > 60) ? 1'b1 : 1'b0;
-  assign pink_detect = ((hue < 340 && hue > 270)) ? 1'b1 : 1'b0;
+  assign pink_detect = ((hue < 310 && hue > 90) && sat < 102) ? 1'b1 : 1'b0; // todo: fix this
+  assign green_detect = ((hue < 170 && hue > 150) && sat > 40) ? 1'b1 : 1'b0;
   // Find boundary of cursor box
 
   // Highlight detected areas
   wire [23:0] red_high;
   wire [23:0] blue_high;
   wire [23:0] pink_high;
+  wire [23:0] green_high;
 
   assign grey = green[7:1] + red[7:2] + blue[7:2];  //Grey = green/2 + red/4 + blue/4
 
   assign red_high = red_detect ? {8'hff, 8'h0, 8'h0} : {grey, grey, grey};
   assign blue_high = blue_detect ? {8'h0, 8'h0, 8'hff} : {grey, grey, grey};
   assign pink_high = pink_detect ? {8'hff, 8'hc0, 8'hcb} : {grey, grey, grey};
+  assign green_high = green_detect ? {8'h00, 8'hff, 8'h00} : {grey, grey, grey};
+
   // Show bounding box
   wire [23:0] new_image;
   wire bb_active;
   assign bb_active = (x == left) | (x == right) | (y == top) | (y == bottom);
-  assign new_image = bb_active ? bb_col : pink_high;
+  assign new_image = bb_active ? bb_col : red_high;
 
   // Switch output pixels depending on mode switch
   // Don't modify the start-of-packet word - it's a packet discriptor
@@ -143,7 +161,7 @@ module EEE_IMGPROC (
     if (sop) begin
       x <= 11'h0;
       y <= 11'h0;
-      packet_video <= (blue[3:0] == 3'h0);
+      packet_video <= (blue[3:0] == 3'h0); // todo: work out what this does???
     end else if (in_valid) begin
       if (x == IMAGE_W - 1) begin
         x <= 11'h0;
@@ -157,7 +175,7 @@ module EEE_IMGPROC (
   //Find first and last red pixels
   reg [10:0] x_min, y_min, x_max, y_max;
   always @(posedge clk) begin
-    if (pink_detect & in_valid) begin  //Update bounds when the pixel is red
+    if (red_detect & in_valid) begin  //Update bounds when the pixel is red
       if (x < x_min) x_min <= x;
       if (x > x_max) x_max <= x;
       if (y < y_min) y_min <= y;
@@ -172,7 +190,7 @@ module EEE_IMGPROC (
   end
 
   //Process bounding box at the end of the frame.
-  reg [1:0] msg_state;
+  reg [1:0] msg_state; // todo: only need 4 states for single colour, but will need 20 states for each ball thus needs to be [4:0]
   reg [10:0] left, right, top, bottom;
   reg [7:0] frame_count;
   always @(posedge clk) begin
@@ -212,7 +230,7 @@ module EEE_IMGPROC (
   always @(*) begin  //Write words to FIFO as state machine advances
     case (msg_state)
       2'b00: begin
-        msg_buf_in = 32'b0;
+        msg_buf_in = 32'b0; // why is this necessary if we have no write enable high?
         msg_buf_wr = 1'b0;
       end
       2'b01: begin
@@ -353,8 +371,6 @@ module EEE_IMGPROC (
 
   //Fetch next word from message buffer after read from READ_MSG
   assign msg_buf_rd = s_chipselect & s_read & ~read_d & ~msg_buf_empty & (s_address == `READ_MSG);
-
-
 
 endmodule
 

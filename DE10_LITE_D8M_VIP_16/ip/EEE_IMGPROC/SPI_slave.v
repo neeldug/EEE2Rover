@@ -13,7 +13,7 @@ module SPI_slave (
   input SCK, SSEL, MOSI;
   output MISO;
 
-  output LED[7:0];
+  output LED;
 
   // sync SCK to the FPGA clock using a 3-bits shift register
   reg [2:0] SCKr;
@@ -52,7 +52,7 @@ module SPI_slave (
   always @(posedge clk) byte_received <= SSEL_active && SCK_risingedge && (bitcnt == 3'b111);
 
   // we use the LSB of the data received to control an LED
-  reg [7:0] LED;
+  reg LED;
 // always @(posedge clk) if (byte_received) LED <= byte_data_received;
 
 reg [7:0] byte_data_sent;
@@ -64,9 +64,12 @@ reg flip;
 always @(posedge clk)
 if(SSEL_active & toggle_out)
 begin
-    if (byte_data_received == 8'hff)
+    if (byte_data_received == 8'hff) begin
         byte_data_sent <= 8'b10101010;
+        LED <= 1'b1;
+    end
     else begin
+        LED <= 1'b0;
      if(SSEL_startmessage)
 		byte_data_sent <= byte_data_received;  // first byte sent in a message is the message count
      else
@@ -80,7 +83,7 @@ begin
     end
 end
 
-always @(posedge clk) LED[2] <= byte_data_sent[7];
+// always @(posedge clk) LED[2] <= byte_data_sent[7];
 assign MISO = byte_data_sent[7];  // send MSB first
 // we assume that there is only one slave on the SPI bus
 // so we don't bother with a tri-state buffer for MISO

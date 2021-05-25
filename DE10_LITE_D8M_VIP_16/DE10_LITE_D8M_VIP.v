@@ -184,7 +184,7 @@ module DE10_LITE_D8M_VIP (
       .eee_imgproc_0_conduit_mode_new_signal_3(ARDUINO_IO[14]),  //MOSI
       .eee_imgproc_0_conduit_mode_new_signal_4(ARDUINO_IO[15]),  //MISO
       .eee_imgproc_0_conduit_mode_new_signal_5(ARDUINO_IO[12]),  //SSEL
-      .eee_imgproc_0_conduit_mode_new_signal_6(LEDR[0])  //LED
+      .eee_imgproc_0_conduit_mode_new_signal_6(LEDR[0]),  //LED
   );
 
   FpsMonitor uFps (
@@ -195,16 +195,6 @@ module DE10_LITE_D8M_VIP (
       .hex_fps_h(HEX1),
       .hex_fps_l(HEX0)
   );
-
-  // SPI_slave SPI_slave_inst(
-  // 	.clk(MAX10_CLK2_50),
-  // 	.toggle_out(SW[9]),
-  // 	.SCK(ARDUINO_IO[10]),
-  // 	.SSEL(ARDUINO_IO[12]),
-  // 	.MOSI(ARDUINO_IO[14]),
-  // 	.MISO(ARDUINO_IO[15]),
-  // 	.LED(LEDR[7:0])
-  // );
 
   assign HEX2 = 7'h7F;
   assign HEX3 = 7'h7F;
