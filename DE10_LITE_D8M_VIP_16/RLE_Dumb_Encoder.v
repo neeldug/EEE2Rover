@@ -4,10 +4,11 @@ input CLK,
 output reg [9:0]stream1,stream2,stream3,buffer,
 output reg im_end);
 
-// THIS DUMB RLE ENCODER PERFORMS DUMB FILTERING BY ONLY KEEPING THE LARGEST SEQUENCES PER LINE.\
-// TODO: DELETE ALL SEQUENCES UNDER A CONST TO COMPLETE DUMB FILTERING.
+// THIS DUMB RLE ENCODER PERFORMS DUMB FILTERING BY ONLY KEEPING THE LARGEST SEQUENCES PER LINE.
+// IT ALSO DELETES THE RESULT IF IT IS UNDER MIN_SIZE
 
 parameter IMAGE_W = 11'd25;
+parameter MIN_SIZE = 5;
 
 reg prev = 0;
 reg[9:0] tally = 0;
@@ -35,20 +36,25 @@ begin
 
 		prev <= pixelin;
 	end else begin
+		if (stream2 < MIN_SIZE) begin
+			stream1<= IMAGE_W;
+			stream2<=0;
+			stream3<=0;
+		end	
 		indx <= 0;
 		num <= 0;
 		im_end <= 1;
 		prev <= 0;
 		tally <= 0;
 	end
-	case(num) // WE ARE HANDLING REBASING USING NUM -- THIS ASSUMES OUR BLOCK DOESNT END IN BLACK. WONT BE A PROBLEM GENERALLY
+	case(num) // WE ARE HANDLING REBASING USING NUM -- THIS ASSUMES OUR BLOCK DOESNT END IN WHITE. WONT BE A PROBLEM GENERALLY
 				// BUT MIGHT NEED TO BE CHECKED.
 		0:
-			stream1 <= tally; //WHITE
+			stream1 <= tally; //BLACK
 		3'd1:
-			stream2 <= tally; //BLACK
+			stream2 <= tally; //WHITE
 		3'd2:
-			stream3 <= tally; //WHITE
+			stream3 <= tally; //BLACK
 		3'd3:
 			buffer <= tally; // fill buffer with 2nd black seq
 		3'd4: // handle 2nd black seq now.
