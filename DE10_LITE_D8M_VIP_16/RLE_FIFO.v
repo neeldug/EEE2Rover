@@ -42,6 +42,7 @@ module RLE_FIFO (
 	data,
 	rdreq,
 	wrreq,
+	almost_full,
 	empty,
 	full,
 	q);
@@ -50,33 +51,37 @@ module RLE_FIFO (
 	input	[0:0]  data;
 	input	  rdreq;
 	input	  wrreq;
+	output	  almost_full;
 	output	  empty;
 	output	  full;
 	output	[0:0]  q;
 
 	wire  sub_wire0;
 	wire  sub_wire1;
-	wire [0:0] sub_wire2;
-	wire  empty = sub_wire0;
-	wire  full = sub_wire1;
-	wire [0:0] q = sub_wire2[0:0];
+	wire  sub_wire2;
+	wire [0:0] sub_wire3;
+	wire  almost_full = sub_wire0;
+	wire  empty = sub_wire1;
+	wire  full = sub_wire2;
+	wire [0:0] q = sub_wire3[0:0];
 
 	scfifo	scfifo_component (
 				.clock (clock),
 				.data (data),
 				.rdreq (rdreq),
 				.wrreq (wrreq),
-				.empty (sub_wire0),
-				.full (sub_wire1),
-				.q (sub_wire2),
+				.almost_full (sub_wire0),
+				.empty (sub_wire1),
+				.full (sub_wire2),
+				.q (sub_wire3),
 				.aclr (),
 				.almost_empty (),
-				.almost_full (),
 				.eccstatus (),
 				.sclr (),
 				.usedw ());
 	defparam
 		scfifo_component.add_ram_output_register = "OFF",
+		scfifo_component.almost_full_value = 15,
 		scfifo_component.intended_device_family = "MAX 10",
 		scfifo_component.lpm_numwords = 1024,
 		scfifo_component.lpm_showahead = "OFF",
@@ -95,9 +100,9 @@ endmodule
 // ============================================================
 // Retrieval info: PRIVATE: AlmostEmpty NUMERIC "0"
 // Retrieval info: PRIVATE: AlmostEmptyThr NUMERIC "-1"
-// Retrieval info: PRIVATE: AlmostFull NUMERIC "0"
-// Retrieval info: PRIVATE: AlmostFullThr NUMERIC "-1"
-// Retrieval info: PRIVATE: CLOCKS_ARE_SYNCHRONIZED NUMERIC "0"
+// Retrieval info: PRIVATE: AlmostFull NUMERIC "1"
+// Retrieval info: PRIVATE: AlmostFullThr NUMERIC "15"
+// Retrieval info: PRIVATE: CLOCKS_ARE_SYNCHRONIZED NUMERIC "1"
 // Retrieval info: PRIVATE: Clock NUMERIC "0"
 // Retrieval info: PRIVATE: Depth NUMERIC "1024"
 // Retrieval info: PRIVATE: Empty NUMERIC "1"
@@ -127,6 +132,7 @@ endmodule
 // Retrieval info: PRIVATE: wsUsedW NUMERIC "0"
 // Retrieval info: LIBRARY: altera_mf altera_mf.altera_mf_components.all
 // Retrieval info: CONSTANT: ADD_RAM_OUTPUT_REGISTER STRING "OFF"
+// Retrieval info: CONSTANT: ALMOST_FULL_VALUE NUMERIC "15"
 // Retrieval info: CONSTANT: INTENDED_DEVICE_FAMILY STRING "MAX 10"
 // Retrieval info: CONSTANT: LPM_NUMWORDS NUMERIC "1024"
 // Retrieval info: CONSTANT: LPM_SHOWAHEAD STRING "OFF"
@@ -136,6 +142,7 @@ endmodule
 // Retrieval info: CONSTANT: OVERFLOW_CHECKING STRING "ON"
 // Retrieval info: CONSTANT: UNDERFLOW_CHECKING STRING "ON"
 // Retrieval info: CONSTANT: USE_EAB STRING "ON"
+// Retrieval info: USED_PORT: almost_full 0 0 0 0 OUTPUT NODEFVAL "almost_full"
 // Retrieval info: USED_PORT: clock 0 0 0 0 INPUT NODEFVAL "clock"
 // Retrieval info: USED_PORT: data 0 0 1 0 INPUT NODEFVAL "data[0..0]"
 // Retrieval info: USED_PORT: empty 0 0 0 0 OUTPUT NODEFVAL "empty"
@@ -147,6 +154,7 @@ endmodule
 // Retrieval info: CONNECT: @data 0 0 1 0 data 0 0 1 0
 // Retrieval info: CONNECT: @rdreq 0 0 0 0 rdreq 0 0 0 0
 // Retrieval info: CONNECT: @wrreq 0 0 0 0 wrreq 0 0 0 0
+// Retrieval info: CONNECT: almost_full 0 0 0 0 @almost_full 0 0 0 0
 // Retrieval info: CONNECT: empty 0 0 0 0 @empty 0 0 0 0
 // Retrieval info: CONNECT: full 0 0 0 0 @full 0 0 0 0
 // Retrieval info: CONNECT: q 0 0 1 0 @q 0 0 1 0
@@ -154,6 +162,6 @@ endmodule
 // Retrieval info: GEN_FILE: TYPE_NORMAL RLE_FIFO.inc FALSE
 // Retrieval info: GEN_FILE: TYPE_NORMAL RLE_FIFO.cmp FALSE
 // Retrieval info: GEN_FILE: TYPE_NORMAL RLE_FIFO.bsf FALSE
-// Retrieval info: GEN_FILE: TYPE_NORMAL RLE_FIFO_inst.v FALSE
+// Retrieval info: GEN_FILE: TYPE_NORMAL RLE_FIFO_inst.v TRUE
 // Retrieval info: GEN_FILE: TYPE_NORMAL RLE_FIFO_bb.v TRUE
 // Retrieval info: LIB_FILE: altera_mf
