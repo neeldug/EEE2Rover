@@ -85,7 +85,7 @@ module EEE_IMGPROC (
   parameter BB_COL_DEFAULT = 24'h00ff00;
 
 
-  wire [7:0] red, green, blue, grey;
+  wire [7:0] red, green, blue, grey, black;
   wire [8:0] hue;
   wire [7:0] sat, val;
   wire [7:0] red_out, green_out, blue_out;
@@ -111,7 +111,7 @@ module EEE_IMGPROC (
   // Detect yellow areas
   wire yellow_detect;
 
-  assign red_detect  = ((hue < 20 || hue > 340) && val > 110 && sat > 46) ? 1'b1 : 1'b0;
+  assign red_detect  = ((hue < 20 || hue > 340) && val > 90 sat > 46) ? 1'b1 : 1'b0;
   assign blue_detect = ((hue < 240 && hue > 200) && val > 60) ? 1'b1 : 1'b0;
   assign pink_detect = ((hue < 310 && hue > 90) && sat < 102) ? 1'b1 : 1'b0; // todo: fix this
   assign green_detect = ((hue < 170 && hue > 150) && sat > 40) ? 1'b1 : 1'b0;
@@ -126,12 +126,15 @@ module EEE_IMGPROC (
   wire [23:0] yellow_high;
 
   assign grey = green[7:1] + red[7:2] + blue[7:2];  //Grey = green/2 + red/4 + blue/4
+  assign black = 0;
 
-  assign red_high = red_detect ? {8'hff, 8'h0, 8'h0} : {grey, grey, grey};
-  assign blue_high = blue_detect ? {8'h0, 8'h0, 8'hff} : {grey, grey, grey};
-  assign pink_high = pink_detect ? {8'hff, 8'hc0, 8'hcb} : {grey, grey, grey};
-  assign green_high = green_detect ? {8'h00, 8'hff, 8'h00} : {grey, grey, grey};
-  assign yellow_high = yellow_detect ? {8'hff, 8'hff, 8'h00} : {grey, grey, grey};
+  wire[7:0] sw_colour = 0 ? grey : black;
+  
+  assign red_high = red_detect ? {8'hff, 8'h0, 8'h0} : {sw_colour, sw_colour, sw_colour};
+  assign blue_high = blue_detect ? {8'h0, 8'h0, 8'hff} : {sw_colour, sw_colour, sw_colour};
+  assign pink_high = pink_detect ? {8'hff, 8'hc0, 8'hcb} : {sw_colour, sw_colour, sw_colour};
+  assign green_high = green_detect ? {8'h00, 8'hff, 8'h00} : {sw_colour, sw_colour, sw_colour};
+  assign yellow_high = yellow_detect ? {8'hff, 8'hff, 8'h00} : {sw_colour, sw_colour, sw_colour};
 
   // Show bounding box
   wire [23:0] new_image;
