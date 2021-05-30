@@ -299,6 +299,14 @@ module EEE_IMGPROC (
     endcase
   end
 
+  reg [63:0] data_in;
+
+    always @(posedge clk) begin
+        data_in = {5'b0, red_x_min, 5'b0, red_y_min, 5'b0, red_x_max, 5'b0, red_y_max};
+    end
+
+
+
 
   //Output message FIFO
   MSG_FIFO MSG_FIFO_inst (
@@ -357,6 +365,7 @@ module EEE_IMGPROC (
       .SCK(SCK),
       .MOSI(MOSI),
       .MISO(MISO),
+      .data_in(data_in),
       .SSEL(SSEL),
       .LED(LED)
   );

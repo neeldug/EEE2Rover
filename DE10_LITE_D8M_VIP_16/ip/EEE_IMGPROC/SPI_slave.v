@@ -5,13 +5,16 @@ module SPI_slave (
     MOSI,
     MISO,
     SSEL,
+    data_in,
     LED
 );
   input clk;
   input toggle_out;
+  input [63:0] data_in;
 
   input SCK, SSEL, MOSI;
   output MISO;
+  wire tx;
 
   output LED;
 
@@ -34,60 +37,59 @@ module SPI_slave (
   wire MOSI_data = MOSIr[1];
 
   // we handle SPI in 8-bits format, so we need a 3 bits counter to count the bits as they come in
-  reg [2:0] bitcnt;
+  reg [5:0] bitcnt;
 
   reg byte_received;  // high when a byte has been received
   reg [7:0] byte_data_received;
 
   always @(posedge clk) begin
-    if (~SSEL_active) bitcnt <= 3'b000;
+    if (~SSEL_active) bitcnt <= 6'b000000;
     else if (SCK_risingedge) begin
-      bitcnt <= bitcnt + 3'b001;
+      bitcnt <= bitcnt + 6'b00001;
 
       // implement a shift-left register (since we receive the data MSB first)
-      byte_data_received <= {byte_data_received[6:0], MOSI_data};
+      byte_data_received <= {byte_data_received[7:0], MOSI_data};
     end
   end
 
-  always @(posedge clk) byte_received <= SSEL_active && SCK_risingedge && (bitcnt == 3'b111);
+  assign tx = (bitcnt == {6{1'b1}}) | (bitcnt == 'b0);  // pull new data in to SPI
+
+  always @(posedge clk)
+    byte_received <= SSEL_active && SCK_risingedge && (bitcnt == 6'b111111);  // sets high when
 
   // we use the LSB of the data received to control an LED
   reg LED;
-// always @(posedge clk) if (byte_received) LED <= byte_data_received;
+  // always @(posedge clk) if (byte_received) LED <= byte_data_received;
 
-reg [7:0] byte_data_sent;
+  reg [63:0] byte_data_sent;
 
-reg [7:0] cnt;
-always @(posedge clk) if(SSEL_startmessage) cnt<=cnt+8'h1;  // count the messages
-
-reg flip;
-always @(posedge clk)
-if(SSEL_active & toggle_out)
-begin
-    if (byte_data_received == 8'hff) begin
-        byte_data_sent <= 8'b10101010;
-        LED <= 1'b1;
+  reg [31:0] cnt = 'b0;
+  // always @(posedge clk) if(SSEL_startmessage) cnt<=cnt+8'h1;  // count the messages
+  always @(posedge clk) begin
+    if (tx) begin
+		LED <= 1'b1;
+        byte_data_sent <= data_in;
     end
-    else begin
-        LED <= 1'b0;
-     if(SSEL_startmessage)
-		byte_data_sent <= byte_data_received;  // first byte sent in a message is the message count
-     else
-     if(SCK_fallingedge)
-      begin
-        if(bitcnt==3'b000)
-          byte_data_sent <= 8'h00;  // after that, we send 0s
-        else
-          byte_data_sent <= {byte_data_sent[6:0], 1'b0};
+
+    if (SSEL_active & toggle_out) begin
+      if (byte_data_received == 8'hff) begin
+        byte_data_sent <= {8'b01010101, 56'b0};
       end
+      if (SCK_fallingedge) begin
+        cnt <= cnt + 1'b1;
+        byte_data_sent <= {byte_data_sent[62:0], 1'b0};
+      end
+    end else begin
+      byte_data_sent <= 'b0;
     end
-end
+  end
 
-// always @(posedge clk) LED[2] <= byte_data_sent[7];
-assign MISO = byte_data_sent[7];  // send MSB first
-// we assume that there is only one slave on the SPI bus
-// so we don't bother with a tri-state buffer for MISO
-// otherwise we would need to tri-state MISO when SSEL is inactive
+  // always @(posedge clk) LED[2] <= byte_data_sent[7];
+  // send MSB first
+  assign MISO = byte_data_sent[63];
+  // we assume that there is only one slave on the SPI bus
+  // so we don't bother with a tri-state buffer for MISO
+  // otherwise we would need to tri-state MISO when SSEL is inactive
 
 
 endmodule
