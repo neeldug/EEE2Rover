@@ -111,7 +111,7 @@ module EEE_IMGPROC (
   // Detect yellow areas
   wire yellow_detect;
 
-  assign red_detect  = ((hue < 20 || hue > 340) && val > 90 sat > 46) ? 1'b1 : 1'b0;
+  assign red_detect  = ((hue < 20 || hue > 340) && val > 90 && sat > 46) ? 1'b1 : 1'b0;
   assign blue_detect = ((hue < 240 && hue > 200) && val > 60) ? 1'b1 : 1'b0;
   assign pink_detect = ((hue < 310 && hue > 90) && sat < 102) ? 1'b1 : 1'b0; // todo: fix this
   assign green_detect = ((hue < 170 && hue > 150) && sat > 40) ? 1'b1 : 1'b0;

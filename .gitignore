@@ -10,3 +10,4 @@
 **/.metadata/*
 .idea
 DE10_LITE_D8M_VIP_16/Qsys.sopcinfo
+*.vwf
