@@ -1,12 +1,12 @@
 module RLE_Dumb_System(
 input CLK,
 input[23:0] pixelin,
-output reg[23:0] pixelout,
+output reg [23:0] pixelout,
 output im_reset,
 output [9:0] stream1,stream2,stream3 //debug outs
 );
 
-reg bit;
+reg bit_in;
 wire decode_out;
 wire[7:0] red,green,blue;
 
@@ -17,13 +17,15 @@ assign blue = pixelin[23:14];
 
 always @(*)
 begin
-	bit <= !( (red==0) && (green == 0) && (blue == 0) ); // always 1 except if all pixel content is 0. placeholder.
+	bit_in <= !( (red==0) && (green == 0) && (blue == 0) ); // always 1 except if all pixel content is 0. placeholder.
 	pixelout <= decode_out ? {8'hff, 8'h0, 8'h0} : {8'h0, 8'h0, 8'h0}; //pixel out always red. placeholder.
 end
 
+//assign pixelout = {8'hff, 8'h0, 8'h0};
+
 RLE_Dumb_Encoder Encoder(
 .CLK(CLK),
-.pixelin(bit),
+.pixelin(bit_in),
 .stream1(stream1),
 .stream2(stream2),
 .stream3(stream3),

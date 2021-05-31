@@ -96,9 +96,8 @@ module EEE_IMGPROC (
   // Detect red areas
   wire red_detect;
   reg prev_red_detect;
-  reg [10:0] red_RLE;
 
-  initial red_RLE = 0;
+
   // Detect blue areas
   wire blue_detect;
 
@@ -141,15 +140,17 @@ module EEE_IMGPROC (
   wire bb_active;
   assign bb_active = (x == left) | (x == right) | (y == top) | (y == bottom);
   
-  wire red_high_rle;
-  assign new_image = bb_active ? bb_col : red_high_rle;
+  wire[23:0] red_high_rle;
+  assign new_image = bb_active ? bb_col : red_high;
+  
+//  wire[23:0] red_im;
+//  
+//  assign red_im[23:0] = {8'hff, 8'h0, 8'h0};
 
   // Switch output pixels depending on mode switch
   // Don't modify the start-of-packet word - it's a packet discriptor
   // Don't modify data in non-video packets
-  assign {red_out, green_out, blue_out} = (mode & ~sop & packet_video) ? new_image : {
-    red, green, blue
-  };
+  assign {red_out, green_out, blue_out} = (mode & ~sop & packet_video) ? red_high_rle : { red, green, blue };
 
   //Count valid pixels to tget the image coordinates. Reset and detect packet type on Start of Packet.
   reg [10:0] x, y;
@@ -378,7 +379,7 @@ RLE_Dumb_System RLE_Dumb_System_inst
 (
 	.CLK(clk) ,	// input  CLK_sig
 	.pixelin(red_high) ,	// input [23:0] pixelin_sig
-	.pixelout(red_high_rle) ,	// output [23:0] pixelout_sig
+	.pixelout(red_high_rle)	// output [23:0] pixelout_sig
 );
 
 

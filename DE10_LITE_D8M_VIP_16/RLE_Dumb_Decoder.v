@@ -5,7 +5,6 @@ input new_im,
 output fifo_in
 );
 
-// MODULAR DESIGN - THIS WILL HOOK UP TO THE FIFO THAT POWERS THE VGA.
 // THIS CURRENTLY WORKS FOR ANY 3-WORD INPUT. WILL NEED REDESIGN FOR COMPLICATED NON-DETERMINISTIC FILTERS.
 
 reg[9:0] count = 0;
@@ -14,7 +13,9 @@ reg[9:0] active_stream;
 
 reg[9:0] reg_stream1,reg_stream2,reg_stream3 = 1023; // UNASSAILABLE NUMBER, WILL ENFORCE START AT NEW_IM.
 
-always @ (*)
+reg symbol = 0;
+
+always @ (posedge CLK)
 begin
 	case(num)
 		0:
@@ -23,13 +24,9 @@ begin
 			active_stream <= reg_stream2;
 		2'd2:
 			active_stream <= reg_stream3;
+		default:
+			active_stream <= active_stream;
 	endcase
-end
-
-reg symbol = 0;
-
-always @ (posedge CLK)
-begin
 	if (!new_im) begin // acts as reset
 		if (active_stream == count) begin
 			count <= 1;
@@ -45,6 +42,7 @@ begin
 		count <= 0;
 		symbol <= 0;
 	end
+
 end
 
 assign fifo_in = symbol;
