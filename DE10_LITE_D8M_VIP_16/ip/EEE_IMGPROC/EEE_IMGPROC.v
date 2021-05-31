@@ -140,7 +140,9 @@ module EEE_IMGPROC (
   wire [23:0] new_image;
   wire bb_active;
   assign bb_active = (x == left) | (x == right) | (y == top) | (y == bottom);
-  assign new_image = bb_active ? bb_col : red_high;
+  
+  wire red_high_rle;
+  assign new_image = bb_active ? bb_col : red_high_rle;
 
   // Switch output pixels depending on mode switch
   // Don't modify the start-of-packet word - it's a packet discriptor
@@ -369,6 +371,16 @@ module EEE_IMGPROC (
       .SSEL(SSEL),
       .LED(LED)
   );
+  
+  	
+
+RLE_Dumb_System RLE_Dumb_System_inst
+(
+	.CLK(clk) ,	// input  CLK_sig
+	.pixelin(red_high) ,	// input [23:0] pixelin_sig
+	.pixelout(red_high_rle) ,	// output [23:0] pixelout_sig
+);
+
 
 
   /////////////////////////////////
@@ -431,6 +443,8 @@ module EEE_IMGPROC (
 
   //Fetch next word from message buffer after read from READ_MSG
   assign msg_buf_rd = s_chipselect & s_read & ~read_d & ~msg_buf_empty & (s_address == `READ_MSG);
+  
+  
 
 endmodule
 

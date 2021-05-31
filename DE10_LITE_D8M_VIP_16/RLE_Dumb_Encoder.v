@@ -7,8 +7,8 @@ output reg im_end);
 // THIS DUMB RLE ENCODER PERFORMS DUMB FILTERING BY ONLY KEEPING THE LARGEST SEQUENCES PER LINE.
 // IT ALSO DELETES THE RESULT IF IT IS UNDER MIN_SIZE
 
-parameter IMAGE_W = 11'd25;
-parameter MIN_SIZE = 5;
+parameter IMAGE_W = 11'd639;
+parameter MIN_SIZE = 60;
 
 reg prev = 0;
 reg[9:0] tally = 0;
