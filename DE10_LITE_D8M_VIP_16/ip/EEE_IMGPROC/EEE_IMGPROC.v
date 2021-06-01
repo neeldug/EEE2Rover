@@ -361,7 +361,8 @@ module EEE_IMGPROC (
       .blue (blue),
       .hue  (hue),
       .sat  (sat),
-      .val  (val)
+      .val  (val),
+      .valid_in (in_valid)
   );
 
   SPI_slave SPI_slave_inst (
