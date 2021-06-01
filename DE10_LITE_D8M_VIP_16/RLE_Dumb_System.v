@@ -4,7 +4,7 @@ input enable,
 input[23:0] pixelin,
 output reg [23:0] pixelout,
 output im_reset,
-output [12:0] stream1,stream2,stream3 //debug outs
+output [10:0] stream1,stream2,stream3 //debug outs
 );
 
 reg bit_in;
@@ -22,7 +22,6 @@ begin
 	pixelout <= decode_out ? {8'hff, 8'h0, 8'h0} : {8'h0, 8'h0, 8'h0}; //pixel out always red. placeholder.
 end
 
-//assign pixelout = {8'hff, 8'h0, 8'h0};
 
 RLE_Dumb_Encoder Encoder(
 .CLK(CLK),
@@ -50,4 +49,3 @@ endmodule
 // SEPARATION! THE STATE-MACHINE-LIKE ENCODER CANNOT RELIABLY HANDLE RAPIDLY CHANGING STREAKS IN CLOSE PROXIMITY.
 // POTENTIALLY UNSOLVEABLE PROBLEM. REQUIRES LOOKING INTO.
 // FURTHERMORE, WHITE STREAKS NEAR THE EDGE SCREW THINGS UP HORRIBLY.
-// TODO: INTEGRATE ONTO IMAGEPROC

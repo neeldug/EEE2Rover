@@ -2,7 +2,7 @@ module RLE_Dumb_Encoder(
 input pixelin,
 input enable,
 input CLK,
-output reg [12:0]stream1,stream2,stream3,buffer,
+output reg [10:0]stream1,stream2,stream3,buffer,
 output reg im_end);
 
 // THIS DUMB RLE ENCODER PERFORMS DUMB FILTERING BY ONLY KEEPING THE LARGEST SEQUENCES PER LINE.
@@ -12,8 +12,8 @@ parameter IMAGE_W = 11'd639;
 parameter MIN_SIZE = 60;
 
 reg prev = 0;
-reg[12:0] tally = 0;
-reg[12:0] indx = 0;
+reg[10:0] tally = 0;
+reg[10:0] indx = 0;
 reg[2:0] num = 0;
 
 
@@ -50,6 +50,9 @@ begin
 		end
 		case(num) // WE ARE HANDLING REBASING USING NUM -- THIS ASSUMES OUR BLOCK DOESNT END IN WHITE. WONT BE A PROBLEM GENERALLY
 					// BUT MIGHT NEED TO BE CHECKED.
+					
+					
+					// TODO - IMPROVE THIS BY ADDING A FRAME_END REBASE CHECK.
 			0:
 				stream1 <= tally; //BLACK
 			3'd1:

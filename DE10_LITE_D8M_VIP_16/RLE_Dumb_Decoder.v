@@ -1,5 +1,5 @@
 module RLE_Dumb_Decoder(
-input[12:0] stream1,stream2,stream3,
+input[10:0] stream1,stream2,stream3,
 input CLK,
 input new_im,
 input enable,
@@ -8,15 +8,15 @@ output fifo_in
 
 // THIS CURRENTLY WORKS FOR ANY 3-WORD INPUT. WILL NEED REDESIGN FOR COMPLICATED NON-DETERMINISTIC FILTERS.
 
-reg[12:0] count = 0;
+reg[10:0] count = 0;
 reg[2:0] num = 0;
-reg[12:0] active_stream;
+reg[10:0] active_stream;
 
-reg[12:0] reg_stream1,reg_stream2,reg_stream3 = 13'd4095; // UNASSAILABLE NUMBER, WILL ENFORCE START AT NEW_IM.
+reg[10:0] reg_stream1,reg_stream2,reg_stream3 = 11'd1023; // UNASSAILABLE NUMBER, WILL ENFORCE START AT NEW_IM.
 
 reg symbol = 0;
 
-always @(*)
+always @(*) //TODO - FIX UNSAFE LATCHES
 begin
 	case(num)
 		0:

@@ -95,8 +95,6 @@ module EEE_IMGPROC (
 
   // Detect red areas
   wire red_detect;
-  reg prev_red_detect;
-
 
   // Detect blue areas
   wire blue_detect;
@@ -110,7 +108,7 @@ module EEE_IMGPROC (
   // Detect yellow areas
   wire yellow_detect;
 
-  assign red_detect  = ((hue < 20 || hue > 340) && val > 80 && sat > 46) ? 1'b1 : 1'b0;
+  assign red_detect  = ((hue < 20 || hue > 340) && val > 95 && sat > 46) ? 1'b1 : 1'b0;
   assign blue_detect = ((hue < 240 && hue > 200) && val > 60) ? 1'b1 : 1'b0;
   assign pink_detect = ((hue < 310 && hue > 90) && sat < 102) ? 1'b1 : 1'b0; // todo: fix this
   assign green_detect = ((hue < 170 && hue > 150) && sat > 40) ? 1'b1 : 1'b0;
@@ -127,7 +125,7 @@ module EEE_IMGPROC (
   assign grey = green[7:1] + red[7:2] + blue[7:2];  //Grey = green/2 + red/4 + blue/4
   assign black = 0;
 
-  wire[7:0] sw_colour = 0 ? grey : black;
+  wire[7:0] sw_colour = 0 ? grey : black; //todo: change later.
   
   assign red_high = red_detect ? {8'hff, 8'h0, 8'h0} : {sw_colour, sw_colour, sw_colour};
   assign blue_high = blue_detect ? {8'h0, 8'h0, 8'hff} : {sw_colour, sw_colour, sw_colour};
@@ -143,10 +141,6 @@ module EEE_IMGPROC (
   wire[23:0] red_high_rle;
   assign new_image = bb_active ? bb_col : red_high_rle;
   
-//  wire[23:0] red_im;
-//  
-//  assign red_im[23:0] = {8'hff, 8'h0, 8'h0};
-
   // Switch output pixels depending on mode switch
   // Don't modify the start-of-packet word - it's a packet discriptor
   // Don't modify data in non-video packets
@@ -159,7 +153,7 @@ module EEE_IMGPROC (
     if (sop) begin
       x <= 11'h0;
       y <= 11'h0;
-      packet_video <= (blue[3:0] == 3'h0); // todo: work out what this does??? signifies its a video packet
+      packet_video <= (blue[3:0] == 3'h0); // Signifies its a video packet
     end else if (in_valid) begin
       if (x == IMAGE_W - 1) begin
           // if reach border, i.e. x has reached max, reset x to zero and increment y
@@ -180,7 +174,7 @@ module EEE_IMGPROC (
   reg [10:0] yellow_x_min, yellow_y_min, yellow_x_max, yellow_y_max;
   always @(posedge clk) begin
     if (in_valid) begin  //Update bounds when the pixel is red
-        if (red_detect) begin //alternate bounding box calcs below
+        if (red_high_rle != 0) begin
           if (x < red_x_min) red_x_min <= x;
           if (x > red_x_max) red_x_max <= x;
           if (y < red_y_min) red_y_min <= y;
