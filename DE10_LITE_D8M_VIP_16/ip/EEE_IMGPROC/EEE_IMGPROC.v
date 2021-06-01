@@ -110,7 +110,7 @@ module EEE_IMGPROC (
   // Detect yellow areas
   wire yellow_detect;
 
-  assign red_detect  = ((hue < 20 || hue > 340) && val > 90 && sat > 46) ? 1'b1 : 1'b0;
+  assign red_detect  = ((hue < 20 || hue > 340) && val > 80 && sat > 46) ? 1'b1 : 1'b0;
   assign blue_detect = ((hue < 240 && hue > 200) && val > 60) ? 1'b1 : 1'b0;
   assign pink_detect = ((hue < 310 && hue > 90) && sat < 102) ? 1'b1 : 1'b0; // todo: fix this
   assign green_detect = ((hue < 170 && hue > 150) && sat > 40) ? 1'b1 : 1'b0;
@@ -141,7 +141,7 @@ module EEE_IMGPROC (
   assign bb_active = (x == left) | (x == right) | (y == top) | (y == bottom);
   
   wire[23:0] red_high_rle;
-  assign new_image = bb_active ? bb_col : red_high;
+  assign new_image = bb_active ? bb_col : red_high_rle;
   
 //  wire[23:0] red_im;
 //  
@@ -150,7 +150,7 @@ module EEE_IMGPROC (
   // Switch output pixels depending on mode switch
   // Don't modify the start-of-packet word - it's a packet discriptor
   // Don't modify data in non-video packets
-  assign {red_out, green_out, blue_out} = (mode & ~sop & packet_video) ? red_high_rle : { red, green, blue };
+  assign {red_out, green_out, blue_out} = (mode & ~sop & packet_video) ? new_image : { red, green, blue };
 
   //Count valid pixels to tget the image coordinates. Reset and detect packet type on Start of Packet.
   reg [10:0] x, y;
@@ -159,7 +159,7 @@ module EEE_IMGPROC (
     if (sop) begin
       x <= 11'h0;
       y <= 11'h0;
-      packet_video <= (blue[3:0] == 3'h0); // todo: work out what this does???
+      packet_video <= (blue[3:0] == 3'h0); // todo: work out what this does??? signifies its a video packet
     end else if (in_valid) begin
       if (x == IMAGE_W - 1) begin
           // if reach border, i.e. x has reached max, reset x to zero and increment y
@@ -180,7 +180,7 @@ module EEE_IMGPROC (
   reg [10:0] yellow_x_min, yellow_y_min, yellow_x_max, yellow_y_max;
   always @(posedge clk) begin
     if (in_valid) begin  //Update bounds when the pixel is red
-        if (red_detect) begin
+        if (red_detect) begin //alternate bounding box calcs below
           if (x < red_x_min) red_x_min <= x;
           if (x > red_x_max) red_x_max <= x;
           if (y < red_y_min) red_y_min <= y;
@@ -245,6 +245,8 @@ module EEE_IMGPROC (
   reg [7:0] frame_count;
   always @(posedge clk) begin
     if (eop & in_valid & packet_video) begin  //Ignore non-video packets
+	 
+	 
 
       //Latch edges for display overlay on next frame
       left <= red_x_min;
@@ -379,7 +381,8 @@ RLE_Dumb_System RLE_Dumb_System_inst
 (
 	.CLK(clk) ,	// input  CLK_sig
 	.pixelin(red_high) ,	// input [23:0] pixelin_sig
-	.pixelout(red_high_rle)	// output [23:0] pixelout_sig
+	.pixelout(red_high_rle) ,	// output [23:0] pixelout_sig
+	.enable(~sop & packet_video & in_valid)
 );
 
 

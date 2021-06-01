@@ -1,9 +1,10 @@
 module RLE_Dumb_System(
 input CLK,
+input enable,
 input[23:0] pixelin,
 output reg [23:0] pixelout,
 output im_reset,
-output [9:0] stream1,stream2,stream3 //debug outs
+output [12:0] stream1,stream2,stream3 //debug outs
 );
 
 reg bit_in;
@@ -26,6 +27,7 @@ end
 RLE_Dumb_Encoder Encoder(
 .CLK(CLK),
 .pixelin(bit_in),
+.enable(enable),
 .stream1(stream1),
 .stream2(stream2),
 .stream3(stream3),
@@ -34,6 +36,7 @@ RLE_Dumb_Encoder Encoder(
 
 RLE_Dumb_Decoder Decoder(
 .CLK(CLK),
+.enable(enable),
 .stream1(stream1),
 .stream2(stream2),
 .stream3(stream3),
