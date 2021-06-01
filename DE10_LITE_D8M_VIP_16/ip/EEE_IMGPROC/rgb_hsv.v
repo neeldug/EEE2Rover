@@ -1,14 +1,13 @@
 module rgb_hsv (
     input            clk,
     input            rst,
+    input            valid_in,
     input      [7:0] red,
     input      [7:0] green,
     input      [7:0] blue,
     output reg [8:0] hue,
     output reg [7:0] sat,
     output reg [7:0] val
-
-
 );
 
   reg [ 7:0] top;
@@ -25,16 +24,16 @@ module rgb_hsv (
   wire g_b, r_g, r_b;
 
 
-  assign r_g = (red > green) ? 1'b1 : 1'b0; // if red dominates green
-  assign r_b = (red > blue) ? 1'b1 : 1'b0; // if red dominates blue
-  assign g_b = (green > blue) ? 1'b1 : 1'b0; // if green dominates blue
+  assign r_g = (red > green) ? 1'b1 : 1'b0;  // if red dominates green
+  assign r_b = (red > blue) ? 1'b1 : 1'b0;  // if red dominates blue
+  assign g_b = (green > blue) ? 1'b1 : 1'b0;  // if green dominates blue
   always @(posedge clk or negedge rst) begin
     if (!rst) begin
       max <= 8'b0;
       min <= 8'b0;
       top <= 8'b0;
       rgb_se <= 3'b010;
-    end else begin
+    end else if (valid_in) begin
       // case structure for dominant colour
       case ({
         r_g, r_b, g_b
@@ -92,7 +91,7 @@ module rgb_hsv (
       rgb_se_n <= 3'b010;
       max_min <= 8'd0;
       max_n <= 8'd0;
-    end else begin
+    end else if (valid_in) begin
       top_60 <= {top, 6'b000000} - {top, 2'b00};
       rgb_se_n <= rgb_se;
       max_min <= max - min;
@@ -107,7 +106,7 @@ module rgb_hsv (
   always @(posedge clk or negedge rst) begin
     if (!rst) hue <= 9'd0;
 
-    else begin
+    else if (valid_in) begin
       case (rgb_se_n)
 
         3'b000: hue <= 9'd240 - division;
@@ -122,22 +121,22 @@ module rgb_hsv (
 
         3'b111: hue <= division;
 
-        default hue <= 9'd0;
+        default hue <= 9'b0;
       endcase
     end
   end
 
 
   always @(*) begin
-    sat_m = (max_n > 8'd0) ? {max_min[7:0], 8'b00000000} / max_n : 8'd0;
+    sat_m = (max_n > 8'b0) ? {max_min[7:0], 8'b00000000} / max_n : 8'b0;
   end
   always @(posedge clk or negedge rst) begin
-    if (!rst) sat <= 8'd0;
-    else sat <= sat_m;
+    if (!rst) sat <= 8'b0;
+    else if (valid_in) sat <= sat_m;
   end
 
   always @(posedge clk or negedge rst) begin
-    if (!rst) val <= 8'd0;
-    else val <= max_n;
+    if (!rst) val <= 8'b0;
+    else if (valid_in) val <= max_n;
   end
 endmodule
