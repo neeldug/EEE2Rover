@@ -33,23 +33,24 @@
 //agreement for further details.
 
 module RLE_FIFO (
-	clock,
-	data,
-	rdreq,
-	wrreq,
-	almost_full,
-	empty,
-	full,
-	q);
+    clock,
+    data,
+    rdreq,
+    wrreq,
+    almost_full,
+    empty,
+    full,
+    q
+);
 
-	input	  clock;
-	input	[0:0]  data;
-	input	  rdreq;
-	input	  wrreq;
-	output	  almost_full;
-	output	  empty;
-	output	  full;
-	output	[0:0]  q;
+  input clock;
+  input [0:0] data;
+  input rdreq;
+  input wrreq;
+  output almost_full;
+  output empty;
+  output full;
+  output [0:0] q;
 
 endmodule
 

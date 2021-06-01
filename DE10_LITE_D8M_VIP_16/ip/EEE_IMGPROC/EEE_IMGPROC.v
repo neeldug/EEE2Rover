@@ -122,11 +122,11 @@ module EEE_IMGPROC (
   // Detect yellow areas
   wire yellow_detect;
 
-  assign red_detect  = ((hue < 20 || hue > 340) && val > 95 && sat > 46) ? 1'b1 : 1'b0;
+  assign red_detect = ((hue < 20 || hue > 340) && val > 95 && sat > 46) ? 1'b1 : 1'b0;
   assign blue_detect = ((hue < 240 && hue > 200) && val > 60) ? 1'b1 : 1'b0;
-  assign pink_detect = ((hue < 310 && hue > 90) && sat < 102) ? 1'b1 : 1'b0; // todo: fix this
+  assign pink_detect = ((hue < 310 && hue > 90) && sat < 102) ? 1'b1 : 1'b0;  // todo: fix this
   assign green_detect = ((hue < 170 && hue > 150) && sat > 40) ? 1'b1 : 1'b0;
-  assign yellow_detect = 1'b0; //todo: implement yellow threshold
+  assign yellow_detect = 1'b0;  //todo: implement yellow threshold
   // Find boundary of cursor box
 
   // Highlight detected areas
@@ -136,10 +136,10 @@ module EEE_IMGPROC (
   wire [23:0] green_high;
   wire [23:0] yellow_high;
 
-  assign grey = green[7:1] + red[7:2] + blue[7:2];  //Grey = green/2 + red/4 + blue/4
+  assign grey  = green[7:1] + red[7:2] + blue[7:2];  //Grey = green/2 + red/4 + blue/4
   assign black = 0;
 
-  wire[7:0] sw_colour = 0 ? grey : black; //todo: change later.
+  wire [7:0] sw_colour = 0 ? grey : black;  //todo: change later.
 
   assign red_high = red_detect ? {8'hff, 8'h0, 8'h0} : {sw_colour, sw_colour, sw_colour};
   assign blue_high = blue_detect ? {8'h0, 8'h0, 8'hff} : {sw_colour, sw_colour, sw_colour};
@@ -152,13 +152,15 @@ module EEE_IMGPROC (
   wire bb_active;
   assign bb_active = (x == left) | (x == right) | (y == top) | (y == bottom);
 
-  wire[23:0] red_high_rle;
+  wire [23:0] red_high_rle;
   assign new_image = bb_active ? bb_col : red_high_rle;
 
   // Switch output pixels depending on mode switch
   // Don't modify the start-of-packet word - it's a packet discriptor
   // Don't modify data in non-video packets
-  assign {red_out, green_out, blue_out} = (mode & ~sop & packet_video) ? new_image : { red, green, blue };
+  assign {red_out, green_out, blue_out} = (mode & ~sop & packet_video) ? new_image : {
+    red, green, blue
+  };
 
   //Count valid pixels to tget the image coordinates. Reset and detect packet type on Start of Packet.
   reg [10:0] x, y;
@@ -167,15 +169,15 @@ module EEE_IMGPROC (
     if (sop) begin
       x <= 11'h0;
       y <= 11'h0;
-      packet_video <= (blue[3:0] == 3'h0); // Signifies its a video packet
+      packet_video <= (blue[3:0] == 3'h0);  // Signifies its a video packet
     end else if (in_valid) begin
       if (x == IMAGE_W - 1) begin
-          // if reach border, i.e. x has reached max, reset x to zero and increment y
+        // if reach border, i.e. x has reached max, reset x to zero and increment y
         x <= 11'h0;
         y <= y + 11'h1;
       end else begin
         x <= x + 11'h1;
-          // otherwise increment x
+        // otherwise increment x
       end
     end
   end
@@ -188,36 +190,36 @@ module EEE_IMGPROC (
   reg [10:0] yellow_x_min, yellow_y_min, yellow_x_max, yellow_y_max;
   always @(posedge clk) begin
     if (in_valid) begin  //Update bounds when the pixel is red
-        if (red_high_rle != 0) begin
-          if (x < red_x_min) red_x_min <= x;
-          if (x > red_x_max) red_x_max <= x;
-          if (y < red_y_min) red_y_min <= y;
-          if (y > red_y_max) red_y_max <= y;
-        end
-        if (blue_detect) begin
-            if (x < blue_x_min) blue_x_min <= x;
-            if (x > blue_x_max) blue_x_max <= x;
-            if (y < blue_y_min) blue_y_min <= y;
-            if (y > blue_y_max) blue_y_max <= y;
-        end
-        if (pink_detect) begin
-            if (x < pink_x_min) pink_x_min <= x;
-            if (x > pink_x_max) pink_x_max <= x;
-            if (y < pink_y_min) pink_y_min <= y;
-            if (y > pink_y_max) pink_y_max <= y;
-        end
-        if (green_detect) begin
-            if (x < green_x_min) green_x_min <= x;
-            if (x > green_x_max) green_x_max <= x;
-            if (y < green_y_min) green_y_min <= y;
-            if (y > green_y_max) green_y_max <= y;
-        end
-        if (yellow_detect) begin
-            if (x < yellow_x_min) yellow_x_min <= x;
-            if (x > yellow_x_max) yellow_x_max <= x;
-            if (y < yellow_y_min) yellow_y_min <= y;
-            if (y > yellow_y_max) yellow_y_max <= y;
-        end
+      if (red_high_rle != 0) begin
+        if (x < red_x_min) red_x_min <= x;
+        if (x > red_x_max) red_x_max <= x;
+        if (y < red_y_min) red_y_min <= y;
+        if (y > red_y_max) red_y_max <= y;
+      end
+      if (blue_detect) begin
+        if (x < blue_x_min) blue_x_min <= x;
+        if (x > blue_x_max) blue_x_max <= x;
+        if (y < blue_y_min) blue_y_min <= y;
+        if (y > blue_y_max) blue_y_max <= y;
+      end
+      if (pink_detect) begin
+        if (x < pink_x_min) pink_x_min <= x;
+        if (x > pink_x_max) pink_x_max <= x;
+        if (y < pink_y_min) pink_y_min <= y;
+        if (y > pink_y_max) pink_y_max <= y;
+      end
+      if (green_detect) begin
+        if (x < green_x_min) green_x_min <= x;
+        if (x > green_x_max) green_x_max <= x;
+        if (y < green_y_min) green_y_min <= y;
+        if (y > green_y_max) green_y_max <= y;
+      end
+      if (yellow_detect) begin
+        if (x < yellow_x_min) yellow_x_min <= x;
+        if (x > yellow_x_max) yellow_x_max <= x;
+        if (y < yellow_y_min) yellow_y_min <= y;
+        if (y > yellow_y_max) yellow_y_max <= y;
+      end
     end
     if (sop & in_valid) begin  //Reset bounds on start of packet
       red_x_min <= IMAGE_W - 11'h1;
@@ -294,7 +296,7 @@ module EEE_IMGPROC (
   always @(*) begin  //Write words to FIFO as state machine advances
     case (msg_state)
       2'b00: begin
-        msg_buf_in = 32'b0; // why is this necessary if we have no write enable high?
+        msg_buf_in = 32'b0;  // why is this necessary if we have no write enable high?
         msg_buf_wr = 1'b0;
       end
       2'b01: begin
@@ -314,9 +316,9 @@ module EEE_IMGPROC (
 
   reg [63:0] data_in;
 
-    always @(posedge clk) begin
-        data_in = {5'b0, red_x_min, 5'b0, red_y_min, 5'b0, red_x_max, 5'b0, red_y_max};
-    end
+  always @(posedge clk) begin
+    data_in = {5'b0, red_x_min, 5'b0, red_y_min, 5'b0, red_x_max, 5'b0, red_y_max};
+  end
 
 
 
@@ -362,15 +364,15 @@ module EEE_IMGPROC (
   );
 
   rgb_hsv rgb_hsv_inst (
-      .clk  (clk),
-      .rst  (reset_n),
-      .red  (red),
+      .clk(clk),
+      .rst(reset_n),
+      .red(red),
       .green(green),
-      .blue (blue),
-      .hue  (hue),
-      .sat  (sat),
-      .val  (val),
-      .valid_in (in_valid)
+      .blue(blue),
+      .hue(hue),
+      .sat(sat),
+      .val(val),
+      .valid_in(in_valid)
   );
 
   SPI_slave SPI_slave_inst (
@@ -386,13 +388,12 @@ module EEE_IMGPROC (
 
 
 
-RLE_Dumb_System RLE_Dumb_System_inst
-(
-	.CLK(clk) ,	// input  CLK_sig
-	.pixelin(red_high) ,	// input [23:0] pixelin_sig
-	.pixelout(red_high_rle) ,	// output [23:0] pixelout_sig
-	.enable(~sop & packet_video & in_valid)
-);
+  RLE_Dumb_System RLE_Dumb_System_inst (
+      .CLK(clk),  // input  CLK_sig
+      .pixelin(red_high),  // input [23:0] pixelin_sig
+      .pixelout(red_high_rle),  // output [23:0] pixelout_sig
+      .enable(~sop & packet_video & in_valid)
+  );
 
 
 

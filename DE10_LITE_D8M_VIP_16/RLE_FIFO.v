@@ -38,59 +38,55 @@
 `timescale 1 ps / 1 ps
 // synopsys translate_on
 module RLE_FIFO (
-	clock,
-	data,
-	rdreq,
-	wrreq,
-	almost_full,
-	empty,
-	full,
-	q);
+    clock,
+    data,
+    rdreq,
+    wrreq,
+    almost_full,
+    empty,
+    full,
+    q
+);
 
-	input	  clock;
-	input	[0:0]  data;
-	input	  rdreq;
-	input	  wrreq;
-	output	  almost_full;
-	output	  empty;
-	output	  full;
-	output	[0:0]  q;
+  input clock;
+  input [0:0] data;
+  input rdreq;
+  input wrreq;
+  output almost_full;
+  output empty;
+  output full;
+  output [0:0] q;
 
-	wire  sub_wire0;
-	wire  sub_wire1;
-	wire  sub_wire2;
-	wire [0:0] sub_wire3;
-	wire  almost_full = sub_wire0;
-	wire  empty = sub_wire1;
-	wire  full = sub_wire2;
-	wire [0:0] q = sub_wire3[0:0];
+  wire sub_wire0;
+  wire sub_wire1;
+  wire sub_wire2;
+  wire [0:0] sub_wire3;
+  wire almost_full = sub_wire0;
+  wire empty = sub_wire1;
+  wire full = sub_wire2;
+  wire [0:0] q = sub_wire3[0:0];
 
-	scfifo	scfifo_component (
-				.clock (clock),
-				.data (data),
-				.rdreq (rdreq),
-				.wrreq (wrreq),
-				.almost_full (sub_wire0),
-				.empty (sub_wire1),
-				.full (sub_wire2),
-				.q (sub_wire3),
-				.aclr (),
-				.almost_empty (),
-				.eccstatus (),
-				.sclr (),
-				.usedw ());
-	defparam
-		scfifo_component.add_ram_output_register = "OFF",
-		scfifo_component.almost_full_value = 15,
-		scfifo_component.intended_device_family = "MAX 10",
-		scfifo_component.lpm_numwords = 1024,
-		scfifo_component.lpm_showahead = "OFF",
-		scfifo_component.lpm_type = "scfifo",
-		scfifo_component.lpm_width = 1,
-		scfifo_component.lpm_widthu = 10,
-		scfifo_component.overflow_checking = "ON",
-		scfifo_component.underflow_checking = "ON",
-		scfifo_component.use_eab = "ON";
+  scfifo scfifo_component (
+      .clock(clock),
+      .data(data),
+      .rdreq(rdreq),
+      .wrreq(wrreq),
+      .almost_full(sub_wire0),
+      .empty(sub_wire1),
+      .full(sub_wire2),
+      .q(sub_wire3),
+      .aclr(),
+      .almost_empty(),
+      .eccstatus(),
+      .sclr(),
+      .usedw()
+  );
+  defparam scfifo_component.add_ram_output_register = "OFF",
+      scfifo_component.almost_full_value = 15, scfifo_component.intended_device_family = "MAX 10",
+      scfifo_component.lpm_numwords = 1024, scfifo_component.lpm_showahead = "OFF",
+      scfifo_component.lpm_type = "scfifo", scfifo_component.lpm_width = 1,
+      scfifo_component.lpm_widthu = 10, scfifo_component.overflow_checking = "ON",
+      scfifo_component.underflow_checking = "ON", scfifo_component.use_eab = "ON";
 
 
 endmodule
