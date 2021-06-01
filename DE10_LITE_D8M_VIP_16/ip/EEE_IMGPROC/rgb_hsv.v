@@ -33,7 +33,7 @@ module rgb_hsv (
       min <= 8'b0;
       top <= 8'b0;
       rgb_se <= 3'b010;
-    end else if (valid_in) begin
+    end else begin
       // case structure for dominant colour
       case ({
         r_g, r_b, g_b
@@ -91,7 +91,7 @@ module rgb_hsv (
       rgb_se_n <= 3'b010;
       max_min <= 8'd0;
       max_n <= 8'd0;
-    end else if (valid_in) begin
+    end else begin
       top_60 <= {top, 6'b000000} - {top, 2'b00};
       rgb_se_n <= rgb_se;
       max_min <= max - min;
@@ -106,7 +106,7 @@ module rgb_hsv (
   always @(posedge clk or negedge rst) begin
     if (!rst) hue <= 9'd0;
 
-    else if (valid_in) begin
+    else begin
       case (rgb_se_n)
 
         3'b000: hue <= 9'd240 - division;
@@ -132,11 +132,11 @@ module rgb_hsv (
   end
   always @(posedge clk or negedge rst) begin
     if (!rst) sat <= 8'b0;
-    else if (valid_in) sat <= sat_m;
+    else sat <= sat_m;
   end
 
   always @(posedge clk or negedge rst) begin
     if (!rst) val <= 8'b0;
-    else if (valid_in) val <= max_n;
+    else val <= max_n;
   end
 endmodule

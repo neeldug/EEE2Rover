@@ -178,13 +178,18 @@ module DE10_LITE_D8M_VIP (
       .altpll_0_locked_conduit_export   (),  //          altpll_0_locked_conduit.export
       .altpll_0_phasedone_conduit_export(),  //       altpll_0_phasedone_conduit.export
 
-      .eee_imgproc_0_conduit_mode_new_signal  (SW[0]),
+      .eee_imgproc_0_conduit_mode_new_signal(SW[0]),
       .eee_imgproc_0_conduit_mode_new_signal_1(SW[9]),  //toggle_out
       .eee_imgproc_0_conduit_mode_new_signal_2(ARDUINO_IO[10]),  //SCK
       .eee_imgproc_0_conduit_mode_new_signal_3(ARDUINO_IO[14]),  //MOSI
       .eee_imgproc_0_conduit_mode_new_signal_4(ARDUINO_IO[15]),  //MISO
       .eee_imgproc_0_conduit_mode_new_signal_5(ARDUINO_IO[12]),  //SSEL
-      .eee_imgproc_0_conduit_mode_new_signal_6(LEDR[0])  //LED
+      .eee_imgproc_0_conduit_mode_new_signal_6(LEDR[0]),  //LED
+      .eee_imgproc_0_conduit_mode_new_signal_7(SW[1]),  // red_switch
+      .eee_imgproc_0_conduit_mode_new_signal_8(SW[2]),  // blue_switch
+      .eee_imgproc_0_conduit_mode_new_signal_9(SW[3]),  // yellow_switch
+      .eee_imgproc_0_conduit_mode_new_signal_10(SW[4]),  // green_switch
+      .eee_imgproc_0_conduit_mode_new_signal_11(SW[5])  // pink_switch
   );
 
   FpsMonitor uFps (
