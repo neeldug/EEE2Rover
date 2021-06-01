@@ -23,10 +23,11 @@ module RLE_Dumb_Decoder (
 
   always @(*) //TODO - FIX UNSAFE LATCHES
 begin
+    active_stream = 0;
     case (num)
       0: active_stream = reg_stream1;
-      2'd1: active_stream = reg_stream2;
-      2'd2: active_stream = reg_stream3;
+      2'b1: active_stream = reg_stream2;
+      2'b10: active_stream = reg_stream3;
     endcase
   end
 
