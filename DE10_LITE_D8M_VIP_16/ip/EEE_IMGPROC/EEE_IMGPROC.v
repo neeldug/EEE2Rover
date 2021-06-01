@@ -34,7 +34,14 @@ module EEE_IMGPROC (
     MOSI,
     SCK,
     SSEL,
-    toggle_out
+    toggle_out,
+
+    // switches
+    red_switch,
+    blue_switch,
+    yellow_switch,
+    green_switch,
+    pink_switch
 );
 
 
@@ -75,6 +82,13 @@ module EEE_IMGPROC (
   input SCK;
   input SSEL;
   input toggle_out;
+
+  // Switches
+  input red_switch;
+  input blue_switch;
+  input yellow_switch;
+  input green_switch;
+  input pink_switch;
 
   ////////////////////////////////////////////////////////////////////////
   //
@@ -126,7 +140,7 @@ module EEE_IMGPROC (
   assign black = 0;
 
   wire[7:0] sw_colour = 0 ? grey : black; //todo: change later.
-  
+
   assign red_high = red_detect ? {8'hff, 8'h0, 8'h0} : {sw_colour, sw_colour, sw_colour};
   assign blue_high = blue_detect ? {8'h0, 8'h0, 8'hff} : {sw_colour, sw_colour, sw_colour};
   assign pink_high = pink_detect ? {8'hff, 8'hc0, 8'hcb} : {sw_colour, sw_colour, sw_colour};
@@ -137,10 +151,10 @@ module EEE_IMGPROC (
   wire [23:0] new_image;
   wire bb_active;
   assign bb_active = (x == left) | (x == right) | (y == top) | (y == bottom);
-  
+
   wire[23:0] red_high_rle;
   assign new_image = bb_active ? bb_col : red_high_rle;
-  
+
   // Switch output pixels depending on mode switch
   // Don't modify the start-of-packet word - it's a packet discriptor
   // Don't modify data in non-video packets
@@ -239,8 +253,8 @@ module EEE_IMGPROC (
   reg [7:0] frame_count;
   always @(posedge clk) begin
     if (eop & in_valid & packet_video) begin  //Ignore non-video packets
-	 
-	 
+
+
 
       //Latch edges for display overlay on next frame
       left <= red_x_min;
@@ -369,8 +383,8 @@ module EEE_IMGPROC (
       .SSEL(SSEL),
       .LED(LED)
   );
-  
-  	
+
+
 
 RLE_Dumb_System RLE_Dumb_System_inst
 (
@@ -442,8 +456,8 @@ RLE_Dumb_System RLE_Dumb_System_inst
 
   //Fetch next word from message buffer after read from READ_MSG
   assign msg_buf_rd = s_chipselect & s_read & ~read_d & ~msg_buf_empty & (s_address == `READ_MSG);
-  
-  
+
+
 
 endmodule
 

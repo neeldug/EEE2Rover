@@ -18,8 +18,8 @@ assign blue = pixelin[23:14];
 
 always @(*)
 begin
-	bit_in <= !( (red==0) && (green == 0) && (blue == 0) ); // always 1 except if all pixel content is 0. placeholder.
-	pixelout <= decode_out ? {8'hff, 8'h0, 8'h0} : {8'h0, 8'h0, 8'h0}; //pixel out always red. placeholder.
+	bit_in = !( (red==0) && (green == 0) && (blue == 0) ); // always 1 except if all pixel content is 0. placeholder.
+	pixelout = decode_out ? {8'hff, 8'h0, 8'h0} : {8'h0, 8'h0, 8'h0}; //pixel out always red. placeholder.
 end
 
 

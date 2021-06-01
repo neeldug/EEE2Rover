@@ -3,13 +3,12 @@
  <debug showDebugMenu="0" />
  <systemtable filter="All Interfaces">
   <columns>
-   <connections preferredWidth="335" />
+   <connections preferredWidth="319" />
    <irq preferredWidth="34" />
    <name preferredWidth="201" />
    <export preferredWidth="267" />
   </columns>
  </systemtable>
- <library
-   expandedCategories="Library/University Program/Audio &amp; Video/Video,Library/Basic Functions/Simulation; Debug and Verification/Debug and Performance,Project,Library/Interface Protocols/PCI Express/Example Design Components,Library,Library/Interface Protocols,Library/Interface Protocols/SerialLite,Library/Basic Functions,Library/DSP,Library/University Program/Audio &amp; Video,Library/Interface Protocols/PCI Express,Library/Basic Functions/Simulation; Debug and Verification,Library/University Program,Library/DSP/Video and Image Processing,Library/Basic Functions/Simulation; Debug and Verification/Simulation" />
+ <library expandedCategories="Project,Library" />
  <window width="1848" height="1053" x="72" y="27" />
 </preferences>

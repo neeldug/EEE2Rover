@@ -20,13 +20,11 @@ always @(*) //TODO - FIX UNSAFE LATCHES
 begin
 	case(num)
 		0:
-			active_stream <= reg_stream1;
+			active_stream = reg_stream1;
 		2'd1:
-			active_stream <= reg_stream2;
+			active_stream = reg_stream2;
 		2'd2:
-			active_stream <= reg_stream3;
-		default:
-			active_stream <= active_stream;
+			active_stream = reg_stream3;
 	endcase
 end
 
