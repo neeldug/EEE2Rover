@@ -2,6 +2,7 @@ module RLE_Dumb_System (
     input CLK,
     input enable,
     input [23:0] pixelin,
+    input [23:0] colour,
     output reg [23:0] pixelout,
     output im_reset,
     output [10:0] stream1,
@@ -20,11 +21,9 @@ module RLE_Dumb_System (
 
   always @(*) begin
     bit_in = !( (red==0) && (green == 0) && (blue == 0) ); // always 1 except if all pixel content is 0. placeholder.
-    pixelout = decode_out ? {
-      8'hff, 8'h0, 8'h0
-    } : {
+    pixelout = decode_out ? colour : {
       8'h0, 8'h0, 8'h0
-    };  //pixel out always red. placeholder.
+    };
   end
 
 

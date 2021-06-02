@@ -125,8 +125,8 @@ module EEE_IMGPROC (
   assign red_detect = ((hue < 20 || hue > 340) && val > 95 && sat > 46) ? 1'b1 : 1'b0;
   assign blue_detect = ((hue < 240 && hue > 200) && val > 60) ? 1'b1 : 1'b0;
   assign pink_detect = ((hue < 310 && hue > 90) && sat < 102) ? 1'b1 : 1'b0;  // todo: fix this
-  assign green_detect = ((hue < 170 && hue > 150) && sat > 40) ? 1'b1 : 1'b0;
-  assign yellow_detect = 1'b0;  //todo: implement yellow threshold
+  assign green_detect = ((hue < 180 && hue > 140) && sat > 85 && val > 10) ? 1'b1 : 1'b0;
+  assign yellow_detect = ((hue < 85 && hue > 55) && sat > 10 && val > 40) ? 1'b1 : 1'b0;
   // Find boundary of cursor box
 
   // Highlight detected areas
@@ -350,20 +350,24 @@ module EEE_IMGPROC (
         msg_buf_wr = 1'b1;
       end
       2'b10: begin
-        msg_buf_in = {5'b0, red_x_min, 5'b0, red_y_min};  //Top left coordinate
+        msg_buf_in = {5'b0, blue_x_min, 5'b0, blue_y_min};  //Top left coordinate
         msg_buf_wr = 1'b1;
       end
       2'b11: begin
-        msg_buf_in = {5'b0, red_x_max, 5'b0, red_y_max};  //Bottom right coordinate
+        msg_buf_in = {5'b0, blue_x_max, 5'b0, blue_y_max};  //Bottom right coordinate
         msg_buf_wr = 1'b1;
       end
     endcase
   end
 
-  reg [63:0] data_in;
+  reg [319:0] data_in;
 
   always @(posedge clk) begin
-    data_in <= {5'b0, red_x_min, 5'b0, red_y_min, 5'b0, red_x_max, 5'b0, red_y_max};
+    data_in <= {5'b0, red_x_min, 5'b0, red_y_min, 5'b0, red_x_max,
+        5'b0, yellow_y_max, 5'b0, yellow_x_min, 5'b0, yellow_y_min, 5'b0, yellow_x_max, 5'b0, yellow_y_max,
+        5'b0, green_x_min, 5'b0, green_y_min, 5'b0, green_x_max, 5'b0, green_y_max,
+        5'b0, blue_x_min, 5'b0, blue_y_min, 5'b0, blue_x_max, 5'b0, blue_y_max,
+        5'b0, pink_x_min, 5'b0, pink_y_min, 5'b0, pink_x_max, 5'b0, pink_y_max};
   end
 
 
@@ -440,35 +444,40 @@ module EEE_IMGPROC (
       .CLK(clk),  // input  CLK_sig
       .pixelin(red_high),  // input [23:0] pixelin_sig
       .pixelout(red_high_rle),  // output [23:0] pixelout_sig
-      .enable(~sop & packet_video & in_valid)
+      .enable(~sop & packet_video & in_valid),
+      .colour({8'hff, 8'h0, 8'h0})
   );
 
   RLE_Dumb_System RLE_Dumb_System_blue_inst (
       .CLK(clk),  // input  CLK_sig
       .pixelin(blue_high),  // input [23:0] pixelin_sig
       .pixelout(blue_high_rle),  // output [23:0] pixelout_sig
-      .enable(~sop & packet_video & in_valid)
+      .enable(~sop & packet_video & in_valid),
+      .colour({8'h0, 8'h0, 8'hff})
   );
 
   RLE_Dumb_System RLE_Dumb_System_yellow_inst (
       .CLK(clk),  // input  CLK_sig
       .pixelin(yellow_high),  // input [23:0] pixelin_sig
       .pixelout(yellow_high_rle),  // output [23:0] pixelout_sig
-      .enable(~sop & packet_video & in_valid)
+      .enable(~sop & packet_video & in_valid),
+      .colour({8'hff, 8'hff, 8'h00})
   );
 
   RLE_Dumb_System RLE_Dumb_System_green_inst (
       .CLK(clk),  // input  CLK_sig
       .pixelin(green_high),  // input [23:0] pixelin_sig
       .pixelout(green_high_rle),  // output [23:0] pixelout_sig
-      .enable(~sop & packet_video & in_valid)
+      .enable(~sop & packet_video & in_valid),
+      .colour({8'h0, 8'hff, 8'h0})
   );
 
   RLE_Dumb_System RLE_Dumb_System_pink_inst (
       .CLK(clk),  // input  CLK_sig
       .pixelin(pink_high),  // input [23:0] pixelin_sig
       .pixelout(pink_high_rle),  // output [23:0] pixelout_sig
-      .enable(~sop & packet_video & in_valid)
+      .enable(~sop & packet_video & in_valid),
+      .colour({8'hff, 8'hc0, 8'hcb})
   );
 
   /////////////////////////////////
