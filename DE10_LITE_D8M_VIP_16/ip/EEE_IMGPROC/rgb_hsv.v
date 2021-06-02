@@ -107,22 +107,24 @@ module rgb_hsv (
     if (!rst) hue <= 9'd0;
 
     else begin
-      case (rgb_se_n)
+      if (valid_in) begin
+        case (rgb_se_n)
 
-        3'b000: hue <= 9'd240 - division;
+          3'b000: hue <= 9'd240 - division;
 
-        3'b001: hue <= 9'd120 + division;
+          3'b001: hue <= 9'd120 + division;
 
-        3'b011: hue <= 9'd120 - division;
+          3'b011: hue <= 9'd120 - division;
 
-        3'b100: hue <= 9'd240 + division;
+          3'b100: hue <= 9'd240 + division;
 
-        3'b110: hue <= 9'd360 - division;
+          3'b110: hue <= 9'd360 - division;
 
-        3'b111: hue <= division;
+          3'b111: hue <= division;
 
-        default hue <= 9'b0;
-      endcase
+          default hue <= 9'b0;
+        endcase
+      end
     end
   end
 
@@ -132,11 +134,11 @@ module rgb_hsv (
   end
   always @(posedge clk or negedge rst) begin
     if (!rst) sat <= 8'b0;
-    else sat <= sat_m;
+    else if (valid_in) sat <= sat_m;
   end
 
   always @(posedge clk or negedge rst) begin
     if (!rst) val <= 8'b0;
-    else val <= max_n;
+    else if (valid_in) val <= max_n;
   end
 endmodule
