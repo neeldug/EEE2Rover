@@ -124,7 +124,7 @@ module EEE_IMGPROC (
 
   assign red_detect = ((hue < 20 || hue > 340) && val > 95 && sat > 46) ? 1'b1 : 1'b0;
   assign blue_detect = ((hue < 240 && hue > 200) && val > 60) ? 1'b1 : 1'b0;
-  assign pink_detect = ((hue < 310 && hue > 90) && sat < 102) ? 1'b1 : 1'b0;  // todo: fix this
+  // assign pink_detect = ((hue < 310 && hue > 90) && sat < 102) ? 1'b1 : 1'b0;  // todo: fix this
   assign green_detect = ((hue < 180 && hue > 140) && sat > 85 && val > 10) ? 1'b1 : 1'b0;
   assign yellow_detect = ((hue < 85 && hue > 55) && sat > 10 && val > 40) ? 1'b1 : 1'b0;
   // Find boundary of cursor box
@@ -163,7 +163,7 @@ module EEE_IMGPROC (
   always @(*) begin
 	  if (red_switch) active_high_rle = red_high_rle;
 	  else if (blue_switch) active_high_rle = blue_high_rle;
-	  else if (pink_switch) active_high_rle = pink_high_rle;
+	  else if (pink_switch) active_high_rle = pink_high;
 	  else if (green_switch) active_high_rle = green_high_rle;
 	  else if (yellow_switch) active_high_rle = yellow_high_rle;
 	  else active_high_rle = red_high_rle;
@@ -218,7 +218,7 @@ module EEE_IMGPROC (
         if (y < blue_y_min) blue_y_min <= y;
         if (y > blue_y_max) blue_y_max <= y;
       end
-      if (pink_high_rle) begin
+      if (pink_detect) begin
         if (x < pink_x_min) pink_x_min <= x;
         if (x > pink_x_max) pink_x_max <= x;
         if (y < pink_y_min) pink_y_min <= y;
@@ -363,8 +363,8 @@ module EEE_IMGPROC (
   reg [319:0] data_in;
 
   always @(posedge clk) begin
-    data_in <= {5'b0, red_x_min, 5'b0, red_y_min, 5'b0, red_x_max,
-        5'b0, yellow_y_max, 5'b0, yellow_x_min, 5'b0, yellow_y_min, 5'b0, yellow_x_max, 5'b0, yellow_y_max,
+    data_in <= {5'b0, red_x_min, 5'b0, red_y_min, 5'b0, red_x_max, 5'b0, red_y_max,
+        5'b0, yellow_x_min, 5'b0, yellow_y_min, 5'b0, yellow_x_max, 5'b0, yellow_y_max,
         5'b0, green_x_min, 5'b0, green_y_min, 5'b0, green_x_max, 5'b0, green_y_max,
         5'b0, blue_x_min, 5'b0, blue_y_min, 5'b0, blue_x_max, 5'b0, blue_y_max,
         5'b0, pink_x_min, 5'b0, pink_y_min, 5'b0, pink_x_max, 5'b0, pink_y_max};
@@ -472,13 +472,22 @@ module EEE_IMGPROC (
       .colour({8'h0, 8'hff, 8'h0})
   );
 
-  RLE_Dumb_System RLE_Dumb_System_pink_inst (
-      .CLK(clk),  // input  CLK_sig
-      .pixelin(pink_high),  // input [23:0] pixelin_sig
-      .pixelout(pink_high_rle),  // output [23:0] pixelout_sig
-      .enable(~sop & packet_video & in_valid),
-      .colour({8'hff, 8'hc0, 8'hcb})
-  );
+  // RLE_Dumb_System RLE_Dumb_System_pink_inst (
+  //     .CLK(clk),  // input  CLK_sig
+  //     .pixelin(pink_high),  // input [23:0] pixelin_sig
+  //     .pixelout(pink_high_rle),  // output [23:0] pixelout_sig
+  //     .enable(~sop & packet_video & in_valid),
+  //     .colour({8'hff, 8'hc0, 8'hcb})
+  // );
+
+    edge_detect edge_detect_inst (
+        .clk(clk),
+        .rst(reset_n),
+        .valid_in(~sop & packet_video & in_valid),
+        .value(val),
+        .hue(hue),
+        .edge_detected(pink_detect)
+    );
 
   /////////////////////////////////
   /// Memory-mapped port		 /////

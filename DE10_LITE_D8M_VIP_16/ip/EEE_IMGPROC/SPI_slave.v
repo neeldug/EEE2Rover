@@ -45,17 +45,17 @@ module SPI_slave (
   always @(posedge clk) begin
     if (~SSEL_active) bitcnt <= 9'b000000000;
     else if (SCK_risingedge) begin
-      if (bitcnt == 9'b101000000) bitcnt <= 'b0;
-      else bitcnt <= bitcnt + 9'b00000001;
+      if (bitcnt == 9'b100111111) bitcnt <= 'b0;
+      else bitcnt <= bitcnt + 9'b100111111;
       // implement a shift-left register (since we receive the data MSB first)
       byte_data_received <= {byte_data_received[7:0], MOSI_data};
     end
   end
 
-  assign tx = (bitcnt == 9'b101000000) | (bitcnt == 'b0);  // pull new data in to SPI
+  assign tx = (bitcnt == 9'b100111111) | (bitcnt == 'b0);  // pull new data in to SPI
 
   always @(posedge clk)
-    byte_received <= SSEL_active && SCK_risingedge && (bitcnt == 9'b101000000);  // sets high when
+    byte_received <= SSEL_active && SCK_risingedge && (bitcnt == 9'b100111111);  // sets high when
 
   // we use the LSB of the data received to control an LED
   reg LED;
@@ -68,7 +68,7 @@ module SPI_slave (
 		LED <= 1'b1;
         byte_data_sent <= data_in;
     end
-
+    else LED <= 1'b0;
     if (SSEL_active & toggle_out) begin
       if (SCK_fallingedge) begin
         byte_data_sent <= {byte_data_sent[318:0], 1'b0};
