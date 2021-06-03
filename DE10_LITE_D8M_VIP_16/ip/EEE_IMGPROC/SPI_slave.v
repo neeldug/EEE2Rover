@@ -8,6 +8,15 @@ module SPI_slave (
     data_in,
     LED
 );
+
+  /*
+   * Modified version of https://www.fpga4fun.com/SPI1.html
+   * Sends bus data of data_in to ESP32 using bitcnt to shift it
+   * Setup basic counter to reset the tx flag to pull in fresh data
+   * Synchronise Clock detects rising and falling edges of SCK
+   * Only need unidirectional communication, so can discard byte_data_received
+   */
+
   input clk;
   input toggle_out;
   input [319:0] data_in;
@@ -54,12 +63,10 @@ module SPI_slave (
 
   assign tx = (bitcnt == 9'b100111111) | (bitcnt == 'b0);  // pull new data in to SPI
 
-  always @(posedge clk)
-    byte_received <= SSEL_active && SCK_risingedge && (bitcnt == 9'b100111111);  // sets high when
+  always @(posedge clk)  // sets high when we've reached the full message
+    byte_received <= SSEL_active && SCK_risingedge && (bitcnt == 9'b100111111);
 
-  // we use the LSB of the data received to control an LED
   reg LED;
-  // always @(posedge clk) if (byte_received) LED <= byte_data_received;
 
   reg [319:0] byte_data_sent;
 

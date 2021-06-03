@@ -7,8 +7,15 @@ module edge_detect (
     output reg edge_detected
 );
 
-  reg   [15:0] prev_values;
-  reg   [ 7:0] curr_value;
+    /*
+     * Detects edges by checking gradient changes of brightness over consecutive pixels
+     * In case of anomalous cases we check against two differences
+     * Check previous pixel and previous previous pixel difference to current pixel to determine differential
+     * Set arbitrary adjacency thresholds
+     */
+
+  logic   [15:0] prev_values;
+  logic   [ 7:0] curr_value;
   logic [ 7:0] prev_det;
   logic [ 7:0] prev_prev_det;
 
@@ -17,6 +24,8 @@ module edge_detect (
 
   assign prev_det = (value>prev_values[7:0]) ? value - prev_values[7:0] : prev_values[7:0] - value;
   assign prev_prev_det = (value>prev_values[15:8]) ? value - prev_values[15:8] : prev_values[15:8] - value;
+
+  //  todo: create pixel counter and reset prev_values register if we reach the end of the line
 
   always @(posedge clk or negedge rst) begin
     if (!rst) begin
