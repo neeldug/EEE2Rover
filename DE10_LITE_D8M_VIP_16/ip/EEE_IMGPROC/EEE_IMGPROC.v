@@ -350,11 +350,11 @@ module EEE_IMGPROC (
         msg_buf_wr = 1'b1;
       end
       2'b10: begin
-        msg_buf_in = {5'b0, blue_x_min, 5'b0, blue_y_min};  //Top left coordinate
+        msg_buf_in = {5'b0, red_x_min, 5'b0, red_y_min};  //Top left coordinate
         msg_buf_wr = 1'b1;
       end
       2'b11: begin
-        msg_buf_in = {5'b0, blue_x_max, 5'b0, blue_y_max};  //Bottom right coordinate
+        msg_buf_in = {5'b0, red_x_max, 5'b0, red_y_max};  //Bottom right coordinate
         msg_buf_wr = 1'b1;
       end
     endcase
