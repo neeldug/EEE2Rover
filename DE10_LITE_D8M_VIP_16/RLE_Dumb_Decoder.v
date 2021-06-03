@@ -21,7 +21,7 @@ module RLE_Dumb_Decoder (
 
   reg symbol = 0;
 
-  always @(*) //TODO - FIX UNSAFE LATCHES
+  always @(*)
 begin
     active_stream = 0;
     case (num)
