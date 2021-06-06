@@ -1,33 +1,35 @@
 module rgb_hsv (
-    input            clk,
-    input            rst,
-    input            valid_in,
-    input      [7:0] red,
-    input      [7:0] green,
-    input      [7:0] blue,
-    output reg [8:0] hue,
-    output reg [7:0] sat,
-    output reg [7:0] val
+    input  logic       clk,
+    input  logic       rst,
+    input  logic [7:0] red,
+    input  logic [7:0] green,
+    input  logic [7:0] blue,
+    input  logic       valid_in,
+    output logic [8:0] hue,
+    output logic [7:0] sat,
+    output logic [7:0] val
+
+
 );
 
-  reg [ 7:0] top;
-  reg [13:0] top_60;
-  reg [ 2:0] rgb_se;
-  reg [ 2:0] rgb_se_n;
-  reg [ 7:0] max;
-  reg [ 7:0] min;
-  reg [ 7:0] max_min;
-  reg [ 7:0] sat_m;
-  reg [ 7:0] max_n;
-  reg [ 7:0] division;
+  logic [ 7:0] top;
+  logic [13:0] top_60;
+  logic [ 2:0] rgb_se;
+  logic [ 2:0] rgb_se_n;
+  logic [ 7:0] max;
+  logic [ 7:0] min;
+  logic [ 7:0] max_min;
+  logic [ 7:0] sat_m;
+  logic [ 7:0] max_n;
+  logic [ 7:0] division;
 
-  wire g_b, r_g, r_b;
+  logic g_b, r_g, r_b;
 
 
   assign r_g = (red > green) ? 1'b1 : 1'b0;  // if red dominates green
   assign r_b = (red > blue) ? 1'b1 : 1'b0;  // if red dominates blue
   assign g_b = (green > blue) ? 1'b1 : 1'b0;  // if green dominates blue
-  always @(posedge clk or negedge rst) begin
+  always_ff @(posedge clk or negedge rst) begin
     if (!rst) begin
       max <= 8'b0;
       min <= 8'b0;
@@ -85,7 +87,7 @@ module rgb_hsv (
     end
   end
 
-  always @(posedge clk or negedge rst) begin
+  always_ff @(posedge clk or negedge rst) begin
     if (!rst) begin
       top_60 <= 14'd0;
       rgb_se_n <= 3'b010;
@@ -99,11 +101,11 @@ module rgb_hsv (
     end
   end
 
-  always @(*) begin
+  always_comb begin
     division = (max_min > 8'd0) ? top_60 / max_min : 8'd240;
   end
 
-  always @(posedge clk or negedge rst) begin
+  always_ff @(posedge clk or negedge rst) begin
     if (!rst) hue <= 9'd0;
 
     else begin
@@ -122,23 +124,23 @@ module rgb_hsv (
 
           3'b111: hue <= division;
 
-          default hue <= 9'b0;
+          default hue <= 9'd0;
         endcase
       end
     end
   end
 
 
-  always @(*) begin
-    sat_m = (max_n > 8'b0) ? {max_min[7:0], 8'b00000000} / max_n : 8'b0;
+  always_comb begin
+    sat_m = (max_n > 8'd0) ? {max_min[7:0], 8'b00000000} / max_n : 8'd0;
   end
-  always @(posedge clk or negedge rst) begin
-    if (!rst) sat <= 8'b0;
+  always_ff @(posedge clk or negedge rst) begin
+    if (!rst) sat <= 8'd0;
     else if (valid_in) sat <= sat_m;
   end
 
-  always @(posedge clk or negedge rst) begin
-    if (!rst) val <= 8'b0;
+  always_ff @(posedge clk or negedge rst) begin
+    if (!rst) val <= 8'd0;
     else if (valid_in) val <= max_n;
   end
 endmodule

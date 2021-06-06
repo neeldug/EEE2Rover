@@ -124,7 +124,6 @@ module EEE_IMGPROC (
 
   assign red_detect = ((hue < 20 || hue > 340) && val > 95 && sat > 46) ? 1'b1 : 1'b0;
   assign blue_detect = ((hue < 240 && hue > 200) && val > 60) ? 1'b1 : 1'b0;
-  // assign pink_detect = ((hue < 310 && hue > 90) && sat < 102) ? 1'b1 : 1'b0;  // todo: fix this
   assign green_detect = ((hue < 180 && hue > 140) && sat > 85 && val > 10) ? 1'b1 : 1'b0;
   assign yellow_detect = ((hue < 85 && hue > 55) && sat > 10 && val > 40) ? 1'b1 : 1'b0;
   // Find boundary of cursor box

@@ -1,12 +1,12 @@
 module SPI_slave (
-    clk,
-    toggle_out,
-    SCK,
-    MOSI,
-    MISO,
-    SSEL,
-    data_in,
-    LED
+    input logic clk,
+    input logic toggle_out,
+    input logic SCK,
+    input logic MOSI,
+    output logic MISO,
+    input logic SSEL,
+    input logic [319:0] data_in,
+    output logic LED
 );
 
   /*
@@ -17,41 +17,42 @@ module SPI_slave (
    * Only need unidirectional communication, so can discard byte_data_received
    */
 
-  input clk;
-  input toggle_out;
-  input [319:0] data_in;
-
-  input SCK, SSEL, MOSI;
-  output MISO;
-  wire tx;
-
-  output LED;
+  logic tx;
 
   // sync SCK to the FPGA clock using a 3-bits shift register
-  reg [2:0] SCKr;
+  logic [2:0] SCKr;
   always @(posedge clk) SCKr <= {SCKr[1:0], SCK};
-  wire SCK_risingedge = (SCKr[2:1] == 2'b01);  // now we can detect SCK rising edges
-  wire SCK_fallingedge = (SCKr[2:1] == 2'b10);  // and falling edges
+  logic SCK_risingedge;  // now we can detect SCK rising edges
+  logic SCK_fallingedge;  // and falling edges
+
+  always_comb begin
+    SCK_risingedge  = (SCKr[2:1] == 2'b01);
+    SCK_fallingedge = (SCKr[2:1] == 2'b10);
+  end
 
   // same thing for SSEL
-  reg [2:0] SSELr;
+  logic [2:0] SSELr;
   always @(posedge clk) SSELr <= {SSELr[1:0], SSEL};
-  wire SSEL_active = ~SSELr[1];  // SSEL is active low
-  wire SSEL_startmessage = (SSELr[2:1] == 2'b10);  // message starts at falling edge
-  wire SSEL_endmessage = (SSELr[2:1] == 2'b01);  // message stops at rising edge
+  logic SSEL_active;
+  always_comb SSEL_active = ~SSELr[1];  // SSEL is active low
+  logic SSEL_startmessage;
+  always_comb SSEL_startmessage = (SSELr[2:1] == 2'b10);  // message starts at falling edge
+  logic SSEL_endmessage;
+  always_comb SSEL_endmessage = (SSELr[2:1] == 2'b01);  // message stops at rising edge
 
   // and for MOSI
-  reg [1:0] MOSIr;
-  always @(posedge clk) MOSIr <= {MOSIr[0], MOSI};
-  wire MOSI_data = MOSIr[1];
+  logic [1:0] MOSIr;
+  always_ff @(posedge clk) MOSIr <= {MOSIr[0], MOSI};
+  logic MOSI_data;
+  always_comb MOSI_data = MOSIr[1];
 
   // we handle SPI in 8-bits format, so we need a 3 bits counter to count the bits as they come in
-  reg [8:0] bitcnt;
+  logic [8:0] bitcnt;
 
-  reg byte_received;  // high when a byte has been received
-  reg [7:0] byte_data_received;
+  logic byte_received;  // high when a byte has been received
+  logic [7:0] byte_data_received;
 
-  always @(posedge clk) begin
+  always_ff @(posedge clk) begin
     if (~SSEL_active) bitcnt <= 9'b000000000;
     else if (SCK_risingedge) begin
       if (bitcnt == 9'b100111111) bitcnt <= 'b0;
@@ -63,19 +64,16 @@ module SPI_slave (
 
   assign tx = (bitcnt == 9'b100111111) | (bitcnt == 'b0);  // pull new data in to SPI
 
-  always @(posedge clk)  // sets high when we've reached the full message
+  always_ff @(posedge clk)  // sets high when we've reached the full message
     byte_received <= SSEL_active && SCK_risingedge && (bitcnt == 9'b100111111);
 
-  reg LED;
+  logic [319:0] byte_data_sent;
 
-  reg [319:0] byte_data_sent;
-
-  always @(posedge clk) begin
+  always_ff @(posedge clk) begin
     if (tx) begin
-		LED <= 1'b1;
-        byte_data_sent <= data_in;
-    end
-    else LED <= 1'b0;
+      LED <= 1'b1;
+      byte_data_sent <= data_in;
+    end else LED <= 1'b0;
     if (SSEL_active & toggle_out) begin
       if (SCK_fallingedge) begin
         byte_data_sent <= {byte_data_sent[318:0], 1'b0};
