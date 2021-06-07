@@ -1,12 +1,12 @@
 module RLE_Dumb_Encoder (
-    input pixelin,
-    input enable,
-    input CLK,
-    output reg [10:0] stream1,
+    input logic pixelin,
+    input logic enable,
+    input logic CLK,
+    output logic [10:0] stream1,
     stream2,
     stream3,
     buffer,
-    output reg im_end
+    output logic im_end
 );
 
   // THIS DUMB RLE ENCODER PERFORMS DUMB FILTERING BY ONLY KEEPING THE LARGEST SEQUENCES PER LINE.
@@ -15,13 +15,13 @@ module RLE_Dumb_Encoder (
   parameter IMAGE_W = 11'd639;
   parameter MIN_SIZE = 60;
 
-  reg prev = 0;
-  reg [10:0] tally = 0;
-  reg [10:0] indx = 0;
-  reg [2:0] num = 0;
+  logic prev = 0;
+  logic [10:0] tally = 0;
+  logic [10:0] indx = 0;
+  logic [2:0] num = 0;
 
 
-  always @(posedge CLK) begin
+  always_ff @(posedge CLK) begin
     if (enable) begin
       if (indx != IMAGE_W) begin
         if (indx == 0) begin
@@ -30,12 +30,12 @@ module RLE_Dumb_Encoder (
           stream3 <= 0;
         end
         im_end <= 0;
-        indx   <= indx + 1;
+        indx   <= indx + 11'b00000000001;
         if (pixelin == prev) begin
-          tally <= tally + 1;
+          tally <= tally + 11'b00000000001;
         end else begin
           tally <= 1;
-          num   <= num + 1;
+          num   <= num + 3'b001;
         end
 
         prev <= pixelin;
@@ -47,7 +47,7 @@ module RLE_Dumb_Encoder (
         end
         indx <= 0;
         num <= 0;
-        im_end <= 1;
+        im_end <= 1'b1;
         prev <= 0;
         tally <= 0;
       end
@@ -61,17 +61,18 @@ module RLE_Dumb_Encoder (
         3'd2: stream3 <= tally;  //BLACK
         3'd3: buffer <= tally;  // fill buffer with 2nd black seq
         3'd4: // handle 2nd black seq now.
-			begin
+        begin
           if (buffer > stream2) begin  //rebase
-            stream1 <= indx - buffer - 1;
+            stream1 <= indx - buffer - 11'b00000000001;
             stream2 <= buffer;
             tally   <= 2;
           end else begin  // ignore seq.
-            tally <= stream3 + buffer + 2;
+            tally <= stream3 + buffer + 11'b00000000010;
           end
-          num <= 2;
+          num <= 11'b00000000010;
           buffer <= 0;
         end
+        default: buffer <= 'bx;
       endcase
     end
   end

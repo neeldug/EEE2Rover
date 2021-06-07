@@ -1,37 +1,38 @@
 module RLE_Dumb_Decoder (
-    input [10:0] stream1,
+    input logic [10:0] stream1,
     stream2,
     stream3,
-    input CLK,
-    input new_im,
-    input enable,
-    output fifo_in
+    input logic CLK,
+    input logic new_im,
+    input logic enable,
+    output logic fifo_in
 );
 
   // THIS CURRENTLY WORKS FOR ANY 3-WORD INPUT. WILL NEED REDESIGN FOR COMPLICATED NON-DETERMINISTIC FILTERS.
 
-  reg [10:0] count = 0;
-  reg [ 2:0] num = 0;
-  reg [10:0] active_stream;
+  logic [10:0] count = 0;
+  logic [ 2:0] num = 0;
+  logic [10:0] active_stream;
 
-  reg [10:0]
+  logic [10:0]
       reg_stream1,
       reg_stream2,
       reg_stream3 = 11'd1023;  // UNASSAILABLE NUMBER, WILL ENFORCE START AT NEW_IM.
 
-  reg symbol = 0;
+  logic symbol = 0;
 
-  always @(*)
-begin
-    active_stream = 0;
-    case (num)
-      0: active_stream = reg_stream1;
-      2'b1: active_stream = reg_stream2;
-      2'b10: active_stream = reg_stream3;
-    endcase
+  always_latch begin
+    if (enable) begin
+      case (num)
+        2'b00:   active_stream = reg_stream1;
+        2'b01:   active_stream = reg_stream2;
+        2'b10:   active_stream = reg_stream3;
+        default: active_stream = 'bx;
+      endcase
+    end
   end
 
-  always @(posedge CLK) begin
+  always_ff @(posedge CLK) begin
     if (enable) begin
       if (!new_im) begin  // acts as reset
         if (active_stream == count) begin
