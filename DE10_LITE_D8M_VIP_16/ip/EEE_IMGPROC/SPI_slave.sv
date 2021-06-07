@@ -35,10 +35,6 @@ module SPI_slave (
   always @(posedge clk) SSELr <= {SSELr[1:0], SSEL};
   logic SSEL_active;
   always_comb SSEL_active = ~SSELr[1];  // SSEL is active low
-  logic SSEL_startmessage;
-  always_comb SSEL_startmessage = (SSELr[2:1] == 2'b10);  // message starts at falling edge
-  logic SSEL_endmessage;
-  always_comb SSEL_endmessage = (SSELr[2:1] == 2'b01);  // message stops at rising edge
 
   // and for MOSI
   logic [1:0] MOSIr;
@@ -63,9 +59,6 @@ module SPI_slave (
   end
 
   assign tx = (bitcnt == 9'b100111111) | (bitcnt == 'b0);  // pull new data in to SPI
-
-  always_ff @(posedge clk)  // sets high when we've reached the full message
-    byte_received <= SSEL_active && SCK_risingedge && (bitcnt == 9'b100111111);
 
   logic [319:0] byte_data_sent;
 
