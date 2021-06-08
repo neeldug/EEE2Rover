@@ -4,7 +4,7 @@
 
 set_global_assignment -name FAMILY "MAX 10"
 set_global_assignment -name DEVICE 10M50DAF484C7G
-set_global_assignment -name TOP_LEVEL_ENTITY RLE_Dumb_System
+set_global_assignment -name TOP_LEVEL_ENTITY DE10_LITE_D8M_VIP
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 15.1.0
 set_global_assignment -name LAST_QUARTUS_VERSION "16.1.0 Lite Edition"
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "15:21:37 AUGUST 23,2016"
@@ -255,6 +255,11 @@ set_global_assignment -name VERILOG_FILE ip/EEE_IMGPROC/STREAM_REG_TEST.v
 set_global_assignment -name QIP_FILE ip/EEE_IMGPROC/MSG_FIFO.qip
 set_global_assignment -name VERILOG_FILE ip/EEE_IMGPROC/EEE_IMGPROC.v
 set_global_assignment -name CDF_FILE Chain.cdf
+set_global_assignment -name EDA_SIMULATION_TOOL "ModelSim-Altera (Verilog)"
+set_global_assignment -name EDA_TIME_SCALE "1 ps" -section_id eda_simulation
+set_global_assignment -name EDA_OUTPUT_DATA_FORMAT "VERILOG HDL" -section_id eda_simulation
+set_global_assignment -name EDA_NETLIST_WRITER_OUTPUT_DIR "/media/sf_EE2-VM/EEE2Rover/DE10_LITE_D8M_VIP_16" -section_id eda_simulation
+set_global_assignment -name VECTOR_WAVEFORM_FILE Waveform1.vwf
 set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
 set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
 set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
@@ -430,8 +435,3 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to MIPI_PIXEL_VS
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to MIPI_REFCLK
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to MIPI_RESET_n
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
-set_global_assignment -name EDA_SIMULATION_TOOL "ModelSim-Altera (Verilog)"
-set_global_assignment -name EDA_TIME_SCALE "1 ps" -section_id eda_simulation
-set_global_assignment -name EDA_OUTPUT_DATA_FORMAT "VERILOG HDL" -section_id eda_simulation
-set_global_assignment -name EDA_NETLIST_WRITER_OUTPUT_DIR "/media/sf_EE2-VM/EEE2Rover/DE10_LITE_D8M_VIP_16" -section_id eda_simulation
-set_global_assignment -name VECTOR_WAVEFORM_FILE Waveform1.vwf
