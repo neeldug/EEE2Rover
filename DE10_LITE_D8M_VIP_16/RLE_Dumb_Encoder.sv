@@ -12,8 +12,8 @@ module RLE_Dumb_Encoder (
   // THIS DUMB RLE ENCODER PERFORMS DUMB FILTERING BY ONLY KEEPING THE LARGEST SEQUENCES PER LINE.
   // IT ALSO DELETES THE RESULT IF IT IS UNDER MIN_SIZE
 
-  parameter IMAGE_W = 11'd639;
-  parameter MIN_SIZE = 60;
+  parameter IMAGE_W = 11'd20;
+  parameter MIN_SIZE = 3;
 
   logic prev = 0;
   logic [10:0] tally = 0;
