@@ -438,14 +438,14 @@ module EEE_IMGPROC (
     /////////////////////////////////
     /// RLE Instantiation		 ////
     /////////////////////////////////
-	 
+
 
 
   RLE_Dumb_System RLE_Dumb_System_red_inst (
       .clk(clk),  // input  CLK_sig
       .pixelin(red_high),  // input [23:0] pixelin_sig
       .pixelout(red_high_rle),  // output [23:0] pixelout_sig
-      .valid_in(~sop & packet_video & in_valid & !eop),
+      .valid_in(~sop & packet_video & in_valid),
       .colour({8'hff, 8'h0, 8'h0}),
 		.rst(reset_n) 	// input  rst_sig
   );
@@ -454,17 +454,17 @@ module EEE_IMGPROC (
       .clk(clk),  // input  CLK_sig
       .pixelin(blue_high),  // input [23:0] pixelin_sig
       .pixelout(blue_high_rle),  // output [23:0] pixelout_sig
-      .valid_in(~sop & packet_video & in_valid & !eop),
+      .valid_in(~sop & packet_video & in_valid),
       .colour({8'h0, 8'h0, 8'hff}),
 		.rst(reset_n) 	// input  rst_sig
-		
+
   );
 
   RLE_Dumb_System RLE_Dumb_System_yellow_inst (
       .clk(clk),  // input  CLK_sig
       .pixelin(yellow_high),  // input [23:0] pixelin_sig
       .pixelout(yellow_high_rle),  // output [23:0] pixelout_sig
-      .valid_in(~sop & packet_video & in_valid & !eop),
+      .valid_in(~sop & packet_video & in_valid),
       .colour({8'hff, 8'hff, 8'h00}),
 		.rst(reset_n) 	// input  rst_sig
   );
@@ -473,7 +473,7 @@ module EEE_IMGPROC (
       .clk(clk),  // input  CLK_sig
       .pixelin(green_high),  // input [23:0] pixelin_sig
       .pixelout(green_high_rle),  // output [23:0] pixelout_sig
-      .valid_in(~sop & packet_video & in_valid & !eop),
+      .valid_in(~sop & packet_video & in_valid),
       .colour({8'h0, 8'hff, 8'h0}),
 		.rst(reset_n) 	// input  rst_sig
   );

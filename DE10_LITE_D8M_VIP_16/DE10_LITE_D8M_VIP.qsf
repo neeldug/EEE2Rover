@@ -417,10 +417,7 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to MIPI_PIXEL_HS
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to MIPI_PIXEL_VS
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to MIPI_REFCLK
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to MIPI_RESET_n
-set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
 set_global_assignment -name SYSTEMVERILOG_FILE ip/EEE_IMGPROC/rle_filter.sv
-set_global_assignment -name SYSTEMVERILOG_FILE ip/EEE_IMGPROC/RLE_Dumb_Decoder.sv
-set_global_assignment -name SYSTEMVERILOG_FILE ip/EEE_IMGPROC/RLE_Dumb_Encoder.sv
 set_global_assignment -name SYSTEMVERILOG_FILE ip/EEE_IMGPROC/RLE_Dumb_System.sv
 set_global_assignment -name SYSTEMVERILOG_FILE ip/EEE_IMGPROC/SPI_slave.sv
 set_global_assignment -name SYSTEMVERILOG_FILE ip/EEE_IMGPROC/rgb_hsv.sv
@@ -434,4 +431,4 @@ set_global_assignment -name VERILOG_FILE DE10_LITE_D8M_VIP.v
 set_global_assignment -name VERILOG_FILE ip/EEE_IMGPROC/STREAM_REG_TEST.v
 set_global_assignment -name QIP_FILE ip/EEE_IMGPROC/MSG_FIFO.qip
 set_global_assignment -name VERILOG_FILE ip/EEE_IMGPROC/EEE_IMGPROC.v
-set_global_assignment -name CDF_FILE Chain.cdf
+set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
