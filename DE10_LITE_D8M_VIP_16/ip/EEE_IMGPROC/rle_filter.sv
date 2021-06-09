@@ -25,7 +25,7 @@ module rle_filter(
 
     localparam line_width = 640;
 
-    always @(posedge clk or negedge rst) begin
+    always_ff @(posedge clk or negedge rst) begin
         if (!rst) begin
             pixel_count <= 'b0;
         end

@@ -16,8 +16,8 @@ module RLE_Dumb_System (
   logic [7:0] red, green, blue;
 
   assign red   = pixelin[7:0];
-  assign green = pixelin[13:7];
-  assign blue  = pixelin[23:14];
+  assign green = pixelin[15:8];
+  assign blue  = pixelin[23:16];
 
 
   always_comb begin
@@ -29,7 +29,8 @@ module RLE_Dumb_System (
     .clk(clk),
     .rst(rst),
     .valid_in(valid_in),
-    .pixel_in(pixel_in)
+    .pixel_in(pixel_in),
+    .output_symbol(output_symbol)
   );
 
 endmodule

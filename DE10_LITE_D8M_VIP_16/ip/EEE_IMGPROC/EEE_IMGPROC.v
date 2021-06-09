@@ -447,7 +447,7 @@ module EEE_IMGPROC (
       .pixelout(red_high_rle),  // output [23:0] pixelout_sig
       .valid_in(~sop & packet_video & in_valid),
       .colour({8'hff, 8'h0, 8'h0}),
-		.rst(reset_n) 	// input  rst_sig
+      .rst(reset_n) 	// input  rst_sig
   );
 
   RLE_Dumb_System RLE_Dumb_System_blue_inst (
@@ -456,8 +456,7 @@ module EEE_IMGPROC (
       .pixelout(blue_high_rle),  // output [23:0] pixelout_sig
       .valid_in(~sop & packet_video & in_valid),
       .colour({8'h0, 8'h0, 8'hff}),
-		.rst(reset_n) 	// input  rst_sig
-
+      .rst(reset_n) 	// input  rst_sig
   );
 
   RLE_Dumb_System RLE_Dumb_System_yellow_inst (
@@ -466,7 +465,7 @@ module EEE_IMGPROC (
       .pixelout(yellow_high_rle),  // output [23:0] pixelout_sig
       .valid_in(~sop & packet_video & in_valid),
       .colour({8'hff, 8'hff, 8'h00}),
-		.rst(reset_n) 	// input  rst_sig
+      .rst(reset_n) 	// input  rst_sig
   );
 
   RLE_Dumb_System RLE_Dumb_System_green_inst (
@@ -475,7 +474,7 @@ module EEE_IMGPROC (
       .pixelout(green_high_rle),  // output [23:0] pixelout_sig
       .valid_in(~sop & packet_video & in_valid),
       .colour({8'h0, 8'hff, 8'h0}),
-		.rst(reset_n) 	// input  rst_sig
+      .rst(reset_n) 	// input  rst_sig
   );
 
   // RLE_Dumb_System RLE_Dumb_System_pink_inst (
