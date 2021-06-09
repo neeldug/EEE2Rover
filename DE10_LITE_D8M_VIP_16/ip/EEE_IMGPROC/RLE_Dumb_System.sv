@@ -25,12 +25,12 @@ module RLE_Dumb_System (
     pixelout = output_symbol ? colour : {8'h0, 8'h0, 8'h0};
   end
 
-  rle_filter my_inst(
-    .clk(clk),
-    .rst(rst),
-    .valid_in(valid_in),
-    .pixel_in(pixel_in),
-    .output_symbol(output_symbol)
+  rle_filter my_inst (
+      .clk(clk),
+      .rst(rst),
+      .valid_in(valid_in),
+      .pixel_in(pixel_in),
+      .output_symbol(output_symbol)
   );
 
 endmodule
