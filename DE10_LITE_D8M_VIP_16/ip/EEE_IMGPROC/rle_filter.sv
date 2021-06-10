@@ -15,7 +15,7 @@ module rle_filter (
 
   logic im_end;
 
-  localparam byte MinimumRun = 20;
+  parameter byte MIN_RUN = 20;
 
   logic [10:0] largest_run;
 
@@ -30,7 +30,7 @@ module rle_filter (
       pixel_count <= 'b0;
     end else begin
       if (valid_in) begin
-        if (pixel_count == IMAGE_W- 1) begin
+        if (pixel_count == IMAGE_W - 1) begin
           pixel_count <= 'b0;
         end else begin
           pixel_count <= pixel_count + 11'b00000000001;
@@ -72,14 +72,14 @@ module rle_filter (
             end else begin
               curr_run_length <= curr_run_length + 11'b00000000001;
               // add to curr_run_length
-              if (pixel_count == IMAGE_W- 1) begin
-                largest_run <= (largest_run < curr_run_length && curr_run_length > MinimumRun) ? curr_run_length:largest_run;
-                largest_run_start <= (largest_run < curr_run_length && curr_run_length > MinimumRun) ? curr_run_start:largest_run_start;
+              if (pixel_count == IMAGE_W - 1) begin
+                largest_run <= (largest_run < curr_run_length && curr_run_length > MIN_RUN) ? curr_run_length:largest_run;
+                largest_run_start <= (largest_run < curr_run_length && curr_run_length > MIN_RUN) ? curr_run_start:largest_run_start;
               end
             end
           end else begin
-            largest_run <= (largest_run < curr_run_length && curr_run_length > MinimumRun) ? curr_run_length:largest_run;
-            largest_run_start <= (largest_run < curr_run_length && curr_run_length > MinimumRun) ? curr_run_start:largest_run_start;
+            largest_run <= (largest_run < curr_run_length && curr_run_length > MIN_RUN) ? curr_run_length:largest_run;
+            largest_run_start <= (largest_run < curr_run_length && curr_run_length > MIN_RUN) ? curr_run_start:largest_run_start;
             curr_run_length <= 'b0;
             // run has ended
           end

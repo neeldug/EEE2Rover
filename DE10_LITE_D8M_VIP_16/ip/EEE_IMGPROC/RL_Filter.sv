@@ -11,6 +11,8 @@ module RL_Filter (
   // pixelin == 3 8 bit RGB numbers
   // pixel_in = 1 bit bool
 
+  parameter byte MIN_RUN = 20;
+
   logic output_symbol;
   logic pixel_in;
   logic [7:0] red, green, blue;
@@ -25,7 +27,9 @@ module RL_Filter (
     pixelout = output_symbol ? colour : {8'h0, 8'h0, 8'h0};
   end
 
-  rle_filter my_inst (
+  rle_filter #(
+      .MIN_RUN(MIN_RUN)
+  ) my_inst (
       .clk(clk),
       .rst(rst),
       .valid_in(valid_in),

@@ -157,15 +157,15 @@ module EEE_IMGPROC (
   wire [23:0] green_high_rle;
   wire [23:0] yellow_high_rle;
 
-  reg [23:0] active_high_rle;
+  reg  [23:0] active_high_rle;
 
   always @(*) begin
-	  if (red_switch) active_high_rle = red_high_rle;
-	  else if (blue_switch) active_high_rle = blue_high_rle;
-	  else if (pink_switch) active_high_rle = pink_high;
-	  else if (green_switch) active_high_rle = green_high_rle;
-	  else if (yellow_switch) active_high_rle = yellow_high_rle;
-	  else active_high_rle = red_high_rle;
+    if (red_switch) active_high_rle = red_high_rle;
+    else if (blue_switch) active_high_rle = blue_high_rle;
+    else if (pink_switch) active_high_rle = pink_high;
+    else if (green_switch) active_high_rle = green_high_rle;
+    else if (yellow_switch) active_high_rle = yellow_high_rle;
+    else active_high_rle = red_high_rle;
   end
 
   assign new_image = bb_active ? bb_col : active_high_rle;
@@ -272,41 +272,36 @@ module EEE_IMGPROC (
     if (eop & in_valid & packet_video) begin  //Ignore non-video packets
       //Latch edges for display overlay on next frame
       if (red_switch) begin
-          left <= red_x_min;
-          right <= red_x_max;
-          top <= red_y_min;
-          bottom <= red_y_max;
-      end
-      else if (blue_switch) begin
-          left <= blue_x_min;
-          right <= blue_x_max;
-          top <= blue_y_min;
-          bottom <= blue_y_max;
-      end
-      else if (green_switch) begin
-          left <= green_x_min;
-          right <= green_x_max;
-          top <= green_y_min;
-          bottom <= green_y_max;
-      end
-      else if (yellow_switch) begin
-          left <= yellow_x_min;
-          right <= yellow_x_max;
-          top <= yellow_y_min;
-          bottom <= yellow_y_max;
-      end
-      else if (pink_switch) begin
-          left <= pink_x_min;
-          right <= pink_x_max;
-          top <= pink_y_min;
-          bottom <= pink_y_max;
-      end
-      else begin
-          //default red
-          left <= red_x_min;
-          right <= red_x_max;
-          top <= red_y_min;
-          bottom <= red_y_max;
+        left <= red_x_min;
+        right <= red_x_max;
+        top <= red_y_min;
+        bottom <= red_y_max;
+      end else if (blue_switch) begin
+        left <= blue_x_min;
+        right <= blue_x_max;
+        top <= blue_y_min;
+        bottom <= blue_y_max;
+      end else if (green_switch) begin
+        left <= green_x_min;
+        right <= green_x_max;
+        top <= green_y_min;
+        bottom <= green_y_max;
+      end else if (yellow_switch) begin
+        left <= yellow_x_min;
+        right <= yellow_x_max;
+        top <= yellow_y_min;
+        bottom <= yellow_y_max;
+      end else if (pink_switch) begin
+        left <= pink_x_min;
+        right <= pink_x_max;
+        top <= pink_y_min;
+        bottom <= pink_y_max;
+      end else begin
+        //default red
+        left <= red_x_min;
+        right <= red_x_max;
+        top <= red_y_min;
+        bottom <= red_y_max;
       end
 
 
@@ -362,11 +357,48 @@ module EEE_IMGPROC (
   reg [319:0] data_in;
 
   always @(posedge clk) begin
-    data_in <= {5'b0, red_x_min, 5'b0, red_y_min, 5'b0, red_x_max, 5'b0, red_y_max,
-        5'b0, yellow_x_min, 5'b0, yellow_y_min, 5'b0, yellow_x_max, 5'b0, yellow_y_max,
-        5'b0, green_x_min, 5'b0, green_y_min, 5'b0, green_x_max, 5'b0, green_y_max,
-        5'b0, blue_x_min, 5'b0, blue_y_min, 5'b0, blue_x_max, 5'b0, blue_y_max,
-        5'b0, pink_x_min, 5'b0, pink_y_min, 5'b0, pink_x_max, 5'b0, pink_y_max};
+    data_in <= {
+      5'b0,
+      red_x_min,
+      5'b0,
+      red_y_min,
+      5'b0,
+      red_x_max,
+      5'b0,
+      red_y_max,
+      5'b0,
+      yellow_x_min,
+      5'b0,
+      yellow_y_min,
+      5'b0,
+      yellow_x_max,
+      5'b0,
+      yellow_y_max,
+      5'b0,
+      green_x_min,
+      5'b0,
+      green_y_min,
+      5'b0,
+      green_x_max,
+      5'b0,
+      green_y_max,
+      5'b0,
+      blue_x_min,
+      5'b0,
+      blue_y_min,
+      5'b0,
+      blue_x_max,
+      5'b0,
+      blue_y_max,
+      5'b0,
+      pink_x_min,
+      5'b0,
+      pink_y_min,
+      5'b0,
+      pink_x_max,
+      5'b0,
+      pink_y_max
+    };
   end
 
 
@@ -435,49 +467,59 @@ module EEE_IMGPROC (
       .LED(LED)
   );
 
-    /////////////////////////////////
-    /// RLE Instantiation		 ////
-    /////////////////////////////////
+  /////////////////////////////////
+  /// RLE Instantiation		 ////
+  /////////////////////////////////
 
 
 
-  RL_Filter RLESystem_red_inst(
+  RL_Filter #(
+      .MIN_RUN(20)
+  ) RLESystem_red_inst (
       .clk(clk),  // input  CLK_sig
       .pixelin(red_high),  // input [23:0] pixelin_sig
       .pixelout(red_high_rle),  // output [23:0] pixelout_sig
       .valid_in(~sop & packet_video & in_valid),
       .colour({8'hff, 8'h0, 8'h0}),
-      .rst(reset_n) 	// input  rst_sig
+      .rst(reset_n)  // input  rst_sig
   );
 
-  RL_Filter RLESystem_blue_inst(
+  RL_Filter #(
+      .MIN_RUN(20)
+  ) RLESystem_blue_inst (
       .clk(clk),  // input  CLK_sig
       .pixelin(blue_high),  // input [23:0] pixelin_sig
       .pixelout(blue_high_rle),  // output [23:0] pixelout_sig
       .valid_in(~sop & packet_video & in_valid),
       .colour({8'h0, 8'h0, 8'hff}),
-      .rst(reset_n) 	// input  rst_sig
+      .rst(reset_n)  // input  rst_sig
   );
 
-  RL_Filter RLESystem_yellow_inst(
+  RL_Filter #(
+      .MIN_RUN(20)
+  ) RLESystem_yellow_inst (
       .clk(clk),  // input  CLK_sig
       .pixelin(yellow_high),  // input [23:0] pixelin_sig
       .pixelout(yellow_high_rle),  // output [23:0] pixelout_sig
       .valid_in(~sop & packet_video & in_valid),
       .colour({8'hff, 8'hff, 8'h00}),
-      .rst(reset_n) 	// input  rst_sig
+      .rst(reset_n)  // input  rst_sig
   );
 
-  RL_Filter RLESystem_green_inst(
+  RL_Filter #(
+      .MIN_RUN(20)
+  ) RLESystem_green_inst (
       .clk(clk),  // input  CLK_sig
       .pixelin(green_high),  // input [23:0] pixelin_sig
       .pixelout(green_high_rle),  // output [23:0] pixelout_sig
       .valid_in(~sop & packet_video & in_valid),
       .colour({8'h0, 8'hff, 8'h0}),
-      .rst(reset_n) 	// input  rst_sig
+      .rst(reset_n)  // input  rst_sig
   );
 
-  // RL_Filter RLESystem_pink_inst (
+  // RL_Filter #(
+  //       .MIN_RUN(20)
+  // ) RLESystem_pink_inst (
   //     .CLK(clk),  // input  CLK_sig
   //     .pixelin(pink_high),  // input [23:0] pixelin_sig
   //     .pixelout(pink_high_rle),  // output [23:0] pixelout_sig
@@ -485,14 +527,14 @@ module EEE_IMGPROC (
   //     .colour({8'hff, 8'hc0, 8'hcb})
   // );
 
-    edge_detect edge_detect_inst (
-        .clk(clk),
-        .rst(reset_n),
-        .valid_in(~sop & packet_video & in_valid),
-        .value(val),
-        .hue(hue),
-        .edge_detected(pink_detect)
-    );
+  edge_detect edge_detect_inst (
+      .clk(clk),
+      .rst(reset_n),
+      .valid_in(~sop & packet_video & in_valid),
+      .value(val),
+      .hue(hue),
+      .edge_detected(pink_detect)
+  );
 
   /////////////////////////////////
   /// Memory-mapped port		 /////

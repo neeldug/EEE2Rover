@@ -33,23 +33,24 @@
 //agreement for further details.
 
 module MSG_FIFO (
-	clock,
-	data,
-	rdreq,
-	sclr,
-	wrreq,
-	empty,
-	q,
-	usedw);
+    clock,
+    data,
+    rdreq,
+    sclr,
+    wrreq,
+    empty,
+    q,
+    usedw
+);
 
-	input	  clock;
-	input	[31:0]  data;
-	input	  rdreq;
-	input	  sclr;
-	input	  wrreq;
-	output	  empty;
-	output	[31:0]  q;
-	output	[7:0]  usedw;
+  input clock;
+  input [31:0] data;
+  input rdreq;
+  input sclr;
+  input wrreq;
+  output empty;
+  output [31:0] q;
+  output [7:0] usedw;
 
 endmodule
 

@@ -38,56 +38,53 @@
 `timescale 1 ps / 1 ps
 // synopsys translate_on
 module MSG_FIFO (
-	clock,
-	data,
-	rdreq,
-	sclr,
-	wrreq,
-	empty,
-	q,
-	usedw);
+    clock,
+    data,
+    rdreq,
+    sclr,
+    wrreq,
+    empty,
+    q,
+    usedw
+);
 
-	input	  clock;
-	input	[31:0]  data;
-	input	  rdreq;
-	input	  sclr;
-	input	  wrreq;
-	output	  empty;
-	output	[31:0]  q;
-	output	[7:0]  usedw;
+  input clock;
+  input [31:0] data;
+  input rdreq;
+  input sclr;
+  input wrreq;
+  output empty;
+  output [31:0] q;
+  output [7:0] usedw;
 
-	wire  sub_wire0;
-	wire [31:0] sub_wire1;
-	wire [7:0] sub_wire2;
-	wire  empty = sub_wire0;
-	wire [31:0] q = sub_wire1[31:0];
-	wire [7:0] usedw = sub_wire2[7:0];
+  wire sub_wire0;
+  wire [31:0] sub_wire1;
+  wire [7:0] sub_wire2;
+  wire empty = sub_wire0;
+  wire [31:0] q = sub_wire1[31:0];
+  wire [7:0] usedw = sub_wire2[7:0];
 
-	scfifo	scfifo_component (
-				.clock (clock),
-				.data (data),
-				.rdreq (rdreq),
-				.sclr (sclr),
-				.wrreq (wrreq),
-				.empty (sub_wire0),
-				.q (sub_wire1),
-				.usedw (sub_wire2),
-				.aclr (),
-				.almost_empty (),
-				.almost_full (),
-				.eccstatus (),
-				.full ());
-	defparam
-		scfifo_component.add_ram_output_register = "OFF",
-		scfifo_component.intended_device_family = "MAX 10",
-		scfifo_component.lpm_numwords = 256,
-		scfifo_component.lpm_showahead = "ON",
-		scfifo_component.lpm_type = "scfifo",
-		scfifo_component.lpm_width = 32,
-		scfifo_component.lpm_widthu = 8,
-		scfifo_component.overflow_checking = "ON",
-		scfifo_component.underflow_checking = "ON",
-		scfifo_component.use_eab = "ON";
+  scfifo scfifo_component (
+      .clock(clock),
+      .data(data),
+      .rdreq(rdreq),
+      .sclr(sclr),
+      .wrreq(wrreq),
+      .empty(sub_wire0),
+      .q(sub_wire1),
+      .usedw(sub_wire2),
+      .aclr(),
+      .almost_empty(),
+      .almost_full(),
+      .eccstatus(),
+      .full()
+  );
+  defparam scfifo_component.add_ram_output_register = "OFF",
+      scfifo_component.intended_device_family = "MAX 10", scfifo_component.lpm_numwords = 256,
+      scfifo_component.lpm_showahead = "ON", scfifo_component.lpm_type = "scfifo",
+      scfifo_component.lpm_width = 32, scfifo_component.lpm_widthu = 8,
+      scfifo_component.overflow_checking = "ON", scfifo_component.underflow_checking = "ON",
+      scfifo_component.use_eab = "ON";
 
 
 endmodule
