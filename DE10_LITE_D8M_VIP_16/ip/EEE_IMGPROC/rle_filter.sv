@@ -30,7 +30,7 @@ module rle_filter (
       pixel_count <= 'b0;
     end else begin
       if (valid_in) begin
-        if (pixel_count == LINE_WIDTH- 1) begin
+        if (pixel_count == IMAGE_W- 1) begin
           pixel_count <= 'b0;
         end else begin
           pixel_count <= pixel_count + 11'b00000000001;
@@ -47,7 +47,7 @@ module rle_filter (
 
   always_comb begin
     im_end = (pixel_count == 0);
-    final_pix = (pixel_count == LINE_WIDTH);
+    final_pix = (pixel_count == IMAGE_W);
   end
 
   always_ff @(posedge clk or negedge rst) begin
@@ -72,7 +72,7 @@ module rle_filter (
             end else begin
               curr_run_length <= curr_run_length + 11'b00000000001;
               // add to curr_run_length
-              if (pixel_count == LINE_WIDTH- 1) begin
+              if (pixel_count == IMAGE_W- 1) begin
                 largest_run <= (largest_run < curr_run_length && curr_run_length > MinimumRun) ? curr_run_length:largest_run;
                 largest_run_start <= (largest_run < curr_run_length && curr_run_length > MinimumRun) ? curr_run_start:largest_run_start;
               end
@@ -104,10 +104,10 @@ module rle_filter (
           ones <= 'b0;
         end else begin
           if (zeros != 'b0) begin
-            zeros <= zeros - 1;
+            zeros <= zeros - 11'b00000000001;
             output_symbol <= 1'b0;
           end else if (ones != 'b0) begin
-            ones <= ones - 1;
+            ones <= ones - 11'b00000000001;
             output_symbol <= 1'b1;
           end else begin
             output_symbol <= 1'b0;

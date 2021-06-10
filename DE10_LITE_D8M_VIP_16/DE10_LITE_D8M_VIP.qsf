@@ -417,8 +417,8 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to MIPI_PIXEL_HS
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to MIPI_PIXEL_VS
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to MIPI_REFCLK
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to MIPI_RESET_n
+set_global_assignment -name SYSTEMVERILOG_FILE ip/EEE_IMGPROC/RL_Filter.sv
 set_global_assignment -name SYSTEMVERILOG_FILE ip/EEE_IMGPROC/rle_filter.sv
-set_global_assignment -name SYSTEMVERILOG_FILE ip/EEE_IMGPROC/RLE_Dumb_System.sv
 set_global_assignment -name SYSTEMVERILOG_FILE ip/EEE_IMGPROC/SPI_slave.sv
 set_global_assignment -name SYSTEMVERILOG_FILE ip/EEE_IMGPROC/rgb_hsv.sv
 set_global_assignment -name SYSTEMVERILOG_FILE ip/EEE_IMGPROC/edge_detect.sv

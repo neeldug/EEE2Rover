@@ -310,7 +310,7 @@ static SZ_CONFIG_T MipiCameraReg[] = {
 
             // camera bus, register address, value
 	     {0x6c,0x5018, 0x15}, // Red MWB gain
-	     {0x6c,0x501A, 0x10}, // Green MWB gain
+	     {0x6c,0x501A, 0x0D}, // Green MWB gain
 	     {0x6c,0x501C, 0x15}, // Blue MWB gain
 
 

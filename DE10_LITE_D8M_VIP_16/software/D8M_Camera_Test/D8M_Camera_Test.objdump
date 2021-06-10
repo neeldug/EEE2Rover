@@ -75,9 +75,9 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY
  28 .quartus_project_dir 0000002f  00000000  00000000  0007b274  2**0
                   CONTENTS, READONLY
- 29 .jdi          000000e6  00000000  00000000  0007b2a3  2**0
+ 29 .jdi          000040d8  00000000  00000000  0007b2a3  2**0
                   CONTENTS, READONLY
- 30 .sopcinfo     00099ba9  00000000  00000000  0007b389  2**0
+ 30 .sopcinfo     00099ba9  00000000  00000000  0007f37b  2**0
                   CONTENTS, READONLY
 SYMBOL TABLE:
 00020000 l    d  .entry	00000000 .entry
@@ -3293,7 +3293,7 @@ int main()
     	int boundingBoxColour = 0;
    21854:	e03ffb15 	stw	zero,-20(fp)
     	alt_u32 exposureTime = EXPOSURE_INIT;
-   21858:	00880004 	movi	r2,8192
+   21858:	00840004 	movi	r2,4096
    2185c:	e0bffc15 	stw	r2,-16(fp)
     	alt_u16 gain = GAIN_INIT;
    21860:	0083ffc4 	movi	r2,4095

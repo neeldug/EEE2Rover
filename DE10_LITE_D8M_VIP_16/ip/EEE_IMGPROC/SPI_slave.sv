@@ -52,9 +52,7 @@ module SPI_slave (
     if (~SSEL_active) bitcnt <= 9'b000000000;
     else if (SCK_risingedge) begin
       if (bitcnt == 9'b100111111) bitcnt <= 'b0;
-      else bitcnt <= bitcnt + 'b1;
-      // implement a shift-left register (since we receive the data MSB first)
-      byte_data_received <= {byte_data_received[7:0], MOSI_data};
+      else bitcnt <= bitcnt + 9'b000000001;
     end
   end
 
