@@ -47,7 +47,7 @@ module rle_filter (
 
   always_comb begin
     im_end = (pixel_count == 0);
-    final_pix = (pixel_count == IMAGE_W);
+    final_pix = (pixel_count == IMAGE_W - 1);
   end
 
   always_ff @(posedge clk or negedge rst) begin
@@ -101,7 +101,6 @@ module rle_filter (
           ones  <= largest_run;
         end else if (final_pix) begin
           output_symbol <= 1'b0;
-          ones <= 'b0;
         end else begin
           if (zeros != 'b0) begin
             zeros <= zeros - 11'b00000000001;
