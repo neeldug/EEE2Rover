@@ -1,4 +1,4 @@
-module RLE_Dumb_System (
+module RL_Filter (
     input logic clk,
     input logic valid_in,
     input logic rst,

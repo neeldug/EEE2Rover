@@ -441,7 +441,7 @@ module EEE_IMGPROC (
 
 
 
-  RLE_Dumb_System RLE_Dumb_System_red_inst (
+  RL_Filter RLESystem_red_inst(
       .clk(clk),  // input  CLK_sig
       .pixelin(red_high),  // input [23:0] pixelin_sig
       .pixelout(red_high_rle),  // output [23:0] pixelout_sig
@@ -450,7 +450,7 @@ module EEE_IMGPROC (
       .rst(reset_n) 	// input  rst_sig
   );
 
-  RLE_Dumb_System RLE_Dumb_System_blue_inst (
+  RL_Filter RLESystem_blue_inst(
       .clk(clk),  // input  CLK_sig
       .pixelin(blue_high),  // input [23:0] pixelin_sig
       .pixelout(blue_high_rle),  // output [23:0] pixelout_sig
@@ -459,7 +459,7 @@ module EEE_IMGPROC (
       .rst(reset_n) 	// input  rst_sig
   );
 
-  RLE_Dumb_System RLE_Dumb_System_yellow_inst (
+  RL_Filter RLESystem_yellow_inst(
       .clk(clk),  // input  CLK_sig
       .pixelin(yellow_high),  // input [23:0] pixelin_sig
       .pixelout(yellow_high_rle),  // output [23:0] pixelout_sig
@@ -468,7 +468,7 @@ module EEE_IMGPROC (
       .rst(reset_n) 	// input  rst_sig
   );
 
-  RLE_Dumb_System RLE_Dumb_System_green_inst (
+  RL_Filter RLESystem_green_inst(
       .clk(clk),  // input  CLK_sig
       .pixelin(green_high),  // input [23:0] pixelin_sig
       .pixelout(green_high_rle),  // output [23:0] pixelout_sig
@@ -477,7 +477,7 @@ module EEE_IMGPROC (
       .rst(reset_n) 	// input  rst_sig
   );
 
-  // RLE_Dumb_System RLE_Dumb_System_pink_inst (
+  // RL_Filter RLESystem_pink_inst (
   //     .CLK(clk),  // input  CLK_sig
   //     .pixelin(pink_high),  // input [23:0] pixelin_sig
   //     .pixelout(pink_high_rle),  // output [23:0] pixelout_sig

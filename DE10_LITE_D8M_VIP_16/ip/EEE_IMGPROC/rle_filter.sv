@@ -15,7 +15,7 @@ module rle_filter (
 
   logic im_end;
 
-  parameter minimum_run = 20;
+  localparam byte MinimumRun = 20;
 
   logic [10:0] largest_run;
 
@@ -23,17 +23,17 @@ module rle_filter (
 
   logic [10:0] pixel_count;
 
-  localparam line_width = 640;
+  parameter shortint IMAGE_W = 640;
 
   always_ff @(posedge clk or negedge rst) begin
     if (!rst) begin
       pixel_count <= 'b0;
     end else begin
       if (valid_in) begin
-        if (pixel_count == line_width - 1) begin
+        if (pixel_count == LINE_WIDTH- 1) begin
           pixel_count <= 'b0;
         end else begin
-          pixel_count <= pixel_count + 11'b1;
+          pixel_count <= pixel_count + 11'b00000000001;
         end
       end
     end
@@ -47,7 +47,7 @@ module rle_filter (
 
   always_comb begin
     im_end = (pixel_count == 0);
-    final_pix = (pixel_count == line_width);
+    final_pix = (pixel_count == LINE_WIDTH);
   end
 
   always_ff @(posedge clk or negedge rst) begin
@@ -68,18 +68,18 @@ module rle_filter (
             if (curr_run_length == 'b0) begin
               // start new run
               curr_run_start  <= pixel_count;
-              curr_run_length <= 11'b1;
+              curr_run_length <= 11'b00000000001;
             end else begin
-              curr_run_length <= curr_run_length + 11'b1;
+              curr_run_length <= curr_run_length + 11'b00000000001;
               // add to curr_run_length
-              if (pixel_count == line_width - 1) begin
-                largest_run <= (largest_run < curr_run_length && curr_run_length > minimum_run) ? curr_run_length:largest_run;
-                largest_run_start <= (largest_run < curr_run_length && curr_run_length > minimum_run) ? curr_run_start:largest_run_start;
+              if (pixel_count == LINE_WIDTH- 1) begin
+                largest_run <= (largest_run < curr_run_length && curr_run_length > MinimumRun) ? curr_run_length:largest_run;
+                largest_run_start <= (largest_run < curr_run_length && curr_run_length > MinimumRun) ? curr_run_start:largest_run_start;
               end
             end
           end else begin
-            largest_run <= (largest_run < curr_run_length && curr_run_length > minimum_run) ? curr_run_length:largest_run;
-            largest_run_start <= (largest_run < curr_run_length && curr_run_length > minimum_run) ? curr_run_start:largest_run_start;
+            largest_run <= (largest_run < curr_run_length && curr_run_length > MinimumRun) ? curr_run_length:largest_run;
+            largest_run_start <= (largest_run < curr_run_length && curr_run_length > MinimumRun) ? curr_run_start:largest_run_start;
             curr_run_length <= 'b0;
             // run has ended
           end
