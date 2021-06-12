@@ -21,7 +21,7 @@ module SPI_slave (
 
   // sync SCK to the FPGA clock using a 3-bits shift register
   logic [2:0] SCKr;
-  always @(posedge clk) SCKr <= {SCKr[1:0], SCK};
+  always_ff @(posedge clk) SCKr <= {SCKr[1:0], SCK};
   logic SCK_risingedge;  // now we can detect SCK rising edges
   logic SCK_fallingedge;  // and falling edges
 
@@ -32,7 +32,7 @@ module SPI_slave (
 
   // same thing for SSEL
   logic [2:0] SSELr;
-  always @(posedge clk) SSELr <= {SSELr[1:0], SSEL};
+  always_ff @(posedge clk) SSELr <= {SSELr[1:0], SSEL};
   logic SSEL_active;
   always_comb SSEL_active = ~SSELr[1];  // SSEL is active low
 
@@ -74,7 +74,6 @@ module SPI_slave (
     end
   end
 
-  // always @(posedge clk) LED[2] <= byte_data_sent[7];
   // send MSB first
   assign MISO = byte_data_sent[319];
   // we assume that there is only one slave on the SPI bus

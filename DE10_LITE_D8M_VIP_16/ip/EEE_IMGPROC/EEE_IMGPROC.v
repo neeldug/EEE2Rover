@@ -517,24 +517,25 @@ module EEE_IMGPROC (
       .rst(reset_n)  // input  rst_sig
   );
 
-  // RL_Filter #(
-  //       .MIN_RUN(20)
-  // ) RLESystem_pink_inst (
-  //     .CLK(clk),  // input  CLK_sig
-  //     .pixelin(pink_high),  // input [23:0] pixelin_sig
-  //     .pixelout(pink_high_rle),  // output [23:0] pixelout_sig
-  //     .enable(~sop & packet_video & in_valid),
-  //     .colour({8'hff, 8'hc0, 8'hcb})
-  // );
-
-  edge_detect edge_detect_inst (
-      .clk(clk),
-      .rst(reset_n),
+  RL_Filter #(
+        .MIN_RUN(20)
+  ) RLESystem_pink_inst (
+      .clk(clk),  // input  CLK_sig
+      .pixelin(pink_high),  // input [23:0] pixelin_sig
+      .pixelout(pink_high_rle),  // output [23:0] pixelout_sig
       .valid_in(~sop & packet_video & in_valid),
-      .value(val),
-      .hue(hue),
-      .edge_detected(pink_detect)
+      .colour({8'hff, 8'hc0, 8'hcb}),
+      .rst(reset_n)  // input  rst_sig
   );
+
+  // edge_detect edge_detect_inst (
+  //     .clk(clk),
+  //     .rst(reset_n),
+  //     .valid_in(~sop & packet_video & in_valid),
+  //     .value(val),
+  //     .hue(hue),
+  //     .edge_detected(pink_detect)
+  // );
 
   /////////////////////////////////
   /// Memory-mapped port		 /////
