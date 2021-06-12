@@ -42,28 +42,12 @@ module SPI_slave (
   logic MOSI_data;
   always_comb MOSI_data = MOSIr[1];
 
-  // we handle SPI in 8-bits format, so we need a 3 bits counter to count the bits as they come in
-  logic [8:0] bitcnt;
-
-  logic byte_received;  // high when a byte has been received
-  logic [7:0] byte_data_received;
-
-  always_ff @(posedge clk) begin
-    if (~SSEL_active) bitcnt <= 9'b000000000;
-    else if (SCK_risingedge) begin
-      if (bitcnt == 9'b100111111) bitcnt <= 'b0;
-      else bitcnt <= bitcnt + 9'b000000001;
-    end
-  end
-
-  assign tx = (bitcnt == 9'b100111111) | (bitcnt == 'b0);  // pull new data in to SPI
-
   logic [319:0] byte_data_sent;
 
   always_ff @(posedge clk) begin
-    if (tx) begin
+    if (~SSEL_active) begin
       LED <= 1'b1;
-      byte_data_sent <= data_in;
+      byte_data_sent <= data_in;  // fetch new data when SSEL is not active
     end else LED <= 1'b0;
     if (SSEL_active & toggle_out) begin
       if (SCK_fallingedge) begin
