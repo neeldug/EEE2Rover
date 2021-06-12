@@ -122,10 +122,11 @@ module EEE_IMGPROC (
   // Detect yellow areas
   wire yellow_detect;
 
-  assign red_detect = ((hue < 20 || hue > 340) && val > 95 && sat > 46) ? 1'b1 : 1'b0;
-  assign blue_detect = ((hue < 240 && hue > 200) && val > 60) ? 1'b1 : 1'b0;
-  assign green_detect = ((hue < 180 && hue > 140) && sat > 85 && val > 10) ? 1'b1 : 1'b0;
-  assign yellow_detect = ((hue < 85 && hue > 55) && sat > 10 && val > 40) ? 1'b1 : 1'b0;
+  assign red_detect = ((hue < 25 || hue > 340) && val > 70 && sat > 100) ? 1'b1 : 1'b0;
+  assign blue_detect = ((hue < 250 && hue > 210) && sat > 150) ? 1'b1 : 1'b0;
+  assign green_detect = ((hue < 216 && hue > 115) && sat > 110 && val < 180) ? 1'b1 : 1'b0;
+  assign yellow_detect = ((hue < 85 && hue > 30) && sat > 70 && val > 100) ? 1'b1 : 1'b0;
+  assign pink_detect = ((hue < 345 && hue > 250) && sat < 155 && val > 80) ? 1'b1 : 1'b0;
   // Find boundary of cursor box
 
   // Highlight detected areas
@@ -162,7 +163,7 @@ module EEE_IMGPROC (
   always @(*) begin
     if (red_switch) active_high_rle = red_high_rle;
     else if (blue_switch) active_high_rle = blue_high_rle;
-    else if (pink_switch) active_high_rle = pink_high;
+    else if (pink_switch) active_high_rle = pink_high_rle;
     else if (green_switch) active_high_rle = green_high_rle;
     else if (yellow_switch) active_high_rle = yellow_high_rle;
     else active_high_rle = red_high_rle;
@@ -217,7 +218,7 @@ module EEE_IMGPROC (
         if (y < blue_y_min) blue_y_min <= y;
         if (y > blue_y_max) blue_y_max <= y;
       end
-      if (pink_detect) begin
+      if (pink_high_rle) begin
         if (x < pink_x_min) pink_x_min <= x;
         if (x > pink_x_max) pink_x_max <= x;
         if (y < pink_y_min) pink_y_min <= y;
@@ -518,7 +519,7 @@ module EEE_IMGPROC (
   );
 
   RL_Filter #(
-        .MIN_RUN(20)
+        .MIN_RUN(40)
   ) RLESystem_pink_inst (
       .clk(clk),  // input  CLK_sig
       .pixelin(pink_high),  // input [23:0] pixelin_sig
