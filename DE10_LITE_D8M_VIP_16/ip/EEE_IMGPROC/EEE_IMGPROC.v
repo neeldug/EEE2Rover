@@ -123,9 +123,9 @@ module EEE_IMGPROC (
   wire yellow_detect;
 
   assign red_detect = ((hue < 25 || hue > 340) && val > 70 && sat > 100) ? 1'b1 : 1'b0;
-  assign blue_detect = ((hue < 250 && hue > 210) && sat > 150) ? 1'b1 : 1'b0;
-  assign green_detect = ((hue < 216 && hue > 115) && sat > 110 && val < 180) ? 1'b1 : 1'b0;
-  assign yellow_detect = ((hue < 85 && hue > 30) && sat > 70 && val > 100) ? 1'b1 : 1'b0;
+  assign blue_detect = ((hue < 280 && hue > 180) && sat > 110 && val > 50) ? 1'b1 : 1'b0;
+  assign green_detect = ((hue < 250 && hue > 160) && sat > 20 && val > 25) ? 1'b1 : 1'b0;
+  assign yellow_detect = ((hue < 105 && hue > 25) && sat > 45 && val > 40) ? 1'b1 : 1'b0;
   assign pink_detect = ((hue < 345 && hue > 250) && sat < 155 && val > 80) ? 1'b1 : 1'b0;
   // Find boundary of cursor box
 
@@ -137,14 +137,14 @@ module EEE_IMGPROC (
   wire [23:0] yellow_high;
 
   assign grey  = green[7:1] + red[7:2] + blue[7:2];  //Grey = green/2 + red/4 + blue/4
-  assign black = 0;
+  assign black = 'b0;
 
-  wire [7:0] sw_colour = 0 ? grey : black;  //todo: change later.
+  wire [7:0] sw_colour = 'b0 ? grey : black;  //todo: change later.
 
   assign red_high = red_detect ? {8'hff, 8'h0, 8'h0} : {sw_colour, sw_colour, sw_colour};
   assign blue_high = blue_detect ? {8'h0, 8'h0, 8'hff} : {sw_colour, sw_colour, sw_colour};
-  assign pink_high = pink_detect ? {8'hff, 8'hc0, 8'hcb} : {sw_colour, sw_colour, sw_colour};
-  assign green_high = green_detect ? {8'h00, 8'hff, 8'h00} : {sw_colour, sw_colour, sw_colour};
+  assign pink_high = pink_detect ? {8'hff, 8'h14, 8'h93} : {sw_colour, sw_colour, sw_colour};
+  assign green_high = green_detect ? {8'h00, 8'h80, 8'h80} : {sw_colour, sw_colour, sw_colour};
   assign yellow_high = yellow_detect ? {8'hff, 8'hff, 8'h00} : {sw_colour, sw_colour, sw_colour};
 
   // Show bounding box
@@ -514,7 +514,7 @@ module EEE_IMGPROC (
       .pixelin(green_high),  // input [23:0] pixelin_sig
       .pixelout(green_high_rle),  // output [23:0] pixelout_sig
       .valid_in(~sop & packet_video & in_valid),
-      .colour({8'h0, 8'hff, 8'h0}),
+      .colour({8'h0, 8'h80, 8'h80}),
       .rst(reset_n)  // input  rst_sig
   );
 
@@ -525,7 +525,7 @@ module EEE_IMGPROC (
       .pixelin(pink_high),  // input [23:0] pixelin_sig
       .pixelout(pink_high_rle),  // output [23:0] pixelout_sig
       .valid_in(~sop & packet_video & in_valid),
-      .colour({8'hff, 8'hc0, 8'hcb}),
+      .colour({8'hff, 8'h14, 8'h93}),
       .rst(reset_n)  // input  rst_sig
   );
 
